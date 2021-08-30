@@ -13,10 +13,11 @@ spec:
         name: bitnami-charts
         namespace: flux-system
   values:
-    # persistence.storageClass: "longhorn-fast"
-    persistence.existingClaim: "postgres-data"
-    # persistence.size: "5Gi"
-    metrics.enabled: "true"
-    metrics.serviceMonitor.enabled: "true"
+    persistence:
+      existingClaim: "postgres-data"
+    metrics:
+      enabled: true
+#      serviceMonitor:
+#        enabled: true
     postgresqlDatabase: "default"
     fullnameOverride: "postgresql"
