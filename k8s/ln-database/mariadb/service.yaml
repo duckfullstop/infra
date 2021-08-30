@@ -5,7 +5,7 @@ metadata:
 spec:
   ports:
   - name: sql
-    port: 3006
+    port: 3306
     targetPort: sql
   selector:
     app: mariadb
