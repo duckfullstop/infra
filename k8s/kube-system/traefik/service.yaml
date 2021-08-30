@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik
+spec:
+  type: ClusterIP
+  ports:
+  - name: admin
+    port: 8080
+    targetPort: admin
+  selector:
+    app: traefik
+---
+#kind: Service
+#apiVersion: v1
+#metadata:
+#  name: traefik-ingress-service-v6
+#  namespace: kube-system
+#  annotations:
+#    metallb.universe.tf/address-pool: default-ipv6
+#spec:
+#  selector:
+#    app: traefik
+#  ports:
+#    - protocol: TCP
+#      port: 80
+#      name: http
+#    - protocol: TCP
+#      port: 443
+#      name: https
+#    - protocol: TCP
+#      port: 9982
+#      name: rtsp
+#    - protocol: TCP
+#      port: 8883
+#      name: mqtts
+#    - protocol: TCP
+#      port: 636
+#      name: ldaps
+#  type: LoadBalancer 
+  # loadBalancerIP: 10.10.0.5
+  
+  # Pending metallb#727
+  # ipFamilyPolicy: RequireDualStack
+#  ipFamilyPolicy: SingleStack
+#  ipFamilies:
+#    - IPv6
+#---
+kind: Service
+apiVersion: v1
+metadata:
+  name: traefik-ingress-service
+  namespace: kube-system
+#  annotations:
+#    metallb.universe.tf/address-pool: default-ipv4
+spec:
+  selector:
+    app: traefik
+  ports:
+    - protocol: TCP
+      port: 80
+      nodePort: 80
+      name: http
+    - protocol: TCP
+      port: 443
+      nodePort: 443
+      name: https
+    - protocol: TCP
+      port: 9982
+      nodePort: 9982
+      name: rtsp
+    - protocol: TCP
+      port: 8883
+      nodePort: 8883
+      name: mqtts
+    - protocol: TCP
+      port: 636
+      nodePort: 636
+      name: ldaps
+#  type: LoadBalancer
+#  loadBalancerIP: 10.10.0.5
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+   - IPv4
+   - IPv6
+  type: NodePort

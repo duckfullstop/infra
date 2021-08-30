@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+  name: phpldapadmin-ingress
+spec:
+  rules:
+  - host: ldapadmin.net.theleachfamily.me.uk
+    http: &http_rules
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: phpldapadmin
+            port:
+              name: http
+  - host: ldap.net.theleachfamily.me.uk
+    http: *http_rules
+  tls:
+  - hosts:
+    - ldapadmin.net.theleachfamily.me.uk
+    secretName: phpldapadmin-cert

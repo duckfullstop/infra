@@ -1,0 +1,24 @@
+# Expose Dex to the internet for OAuth initiation and callbacks.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+  name: dex
+  namespace: identity-system
+spec:
+  rules:
+  - host: dex.auth.net.theleachfamily.me.uk
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: dex
+            port:
+              name: http
+  tls:
+  - hosts:
+    - dex.auth.net.theleachfamily.me.uk
+    secretName: dex-cert-le

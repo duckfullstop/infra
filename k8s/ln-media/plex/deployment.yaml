@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plex
+  namespace: ln-media
+spec:
+  selector:
+    matchLabels:
+      app: plex
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: plex
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: kumamoto
+      containers:
+        - name: plex
+          image: plexinc/pms-docker:latest
+          ports:
+            - name: pms
+              containerPort: 32400
+            - name: http
+              containerPort: 32400
+            - name: https
+              containerPort: 32443
+          env:
+            - name: TZ
+              value: "Europe/London"
+            - name: HOSTNAME
+              value: "leachnet"
+            - name: PLEX_UID
+              value: "920"
+            - name: PLEX_GID
+              value: "65520"
+            - name: ADVERTISE_IP
+              value: "https://plex.theleachfamily.me.uk"
+          readinessProbe:
+            httpGet:
+              path: /identity
+              port: 32400
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /identity
+              port: 32400
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+          volumeMounts:
+          - name: config
+            mountPath: /config
+          - name: transcode
+            mountPath: /transcode
+          - name: data_downloads_duck
+            mountPath: /data/downloads/duck
+          - name: data_pvr
+            mountpath: /data/pvr
+          - name: data_video
+            mountpath: /data/video
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: plex-config
+      - name: transcode
+        emptyDir:

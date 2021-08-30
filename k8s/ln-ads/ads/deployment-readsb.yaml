@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readsb
+  namespace: ln-ads
+spec:
+  selector:
+    matchLabels:
+      app: readsb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: readsb
+    spec:
+      nodeSelector:
+        k8s.duck.moe/hardware_ads: "true"
+      containers:
+        - name: readsb
+          image: mikenye/readsb-protobuf:latest
+          tty: true
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+            name: http
+          - containerPort: 30005
+            protocol: TCP
+            name: beast
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "100m"
+            limits:
+              memory: "250Mi"
+              cpu: "500m"
+          securityContext:
+            privileged: true
+            procMount: Default
+          env:
+          - name: DISABLE_WEBAPP
+            value: "true"
+          - name: DISABLE_PERFORMANCE_GRAPHS
+            value: "true"
+          - name: TZ
+            value: "Europe/London"
+          - name: READSB_DCFILTER
+            value: "true"
+          - name: READSB_DEVICE_TYPE
+            value: "rtlsdr"
+          - name: READSB_FIX
+            value: "true"
+          - name: READSB_GAIN
+            value: "autogain"
+          - name: READSB_LAT
+            valueFrom:
+              secretKeyRef:
+                name: ads-b
+                key: SITE_LATITUDE
+          - name: READSB_LON
+            valueFrom:
+              secretKeyRef:
+                name: ads-b
+                key: SITE_LONGITUDE
+          - name: READSB_MODEAC
+            value: "true"
+          - name: READSB_RTLSDR_PPM
+            value: "1"
+          - name: READSB_RX_LOCATION_ACCURACY
+            value: "2"
+          - name: READSB_STATS_RANGE
+            value: "true"
+          - name: READSB_NET_ENABLE
+            value: "true"
+          volumeMounts:
+          - name: usb-ads-b
+            mountPath: /dev/bus/usb
+          - name: readsb-autogain
+            mountPath: /run/autogain
+          #livenessProbe:
+          #  exec:
+          #    command:
+          #      - /scripts/healthcheck.sh
+          #  initialDelaySeconds: 3600
+          #  periodSeconds: 60
+      volumes:
+      - name: usb-ads-b
+        hostPath:
+          path: /dev/bus/usb
+          type: Directory
+      - name: readsb-autogain
+        persistentVolumeClaim:
+          claimName: readsb-autogain

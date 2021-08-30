@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tvheadend
+spec:
+  selector:
+    matchLabels:
+      app: tvheadend
+  replicas: 1
+  serviceName: "tvheadend"
+  template:
+    metadata:
+      labels:
+        app: tvheadend
+    spec:
+      nodeSelector:
+        k8s.partyparrot.moe/hardware_tv: "true"
+      containers:
+        - name: tvh
+          image: ghcr.io/linuxserver/tvheadend:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 9981
+            protocol: TCP
+            name: http
+          - containerPort: 9982
+            protocol: TCP
+            name: rtsp
+          #resources:
+          #  requests:
+          #    memory: "250Mi"
+          #    cpu: "500m"
+          #  limits:
+          #    memory: "2Gi"
+          #    cpu: "2"
+          securityContext:
+            privileged: true
+            procMount: Default
+          env:
+          - name: TZ
+            value: "Europe/London"
+          - name: PUID
+            value: "911"
+          - name: PGID
+            value: "65536"
+          volumeMounts:
+          - name: config
+            mountPath: /config
+          - name: timeshift
+            mountPath: /timeshift
+          - name: recordings
+            mountPath: /recordings
+          - name: dev-dvb
+            mountPath: /dev/dvb
+          - name: dev-dri
+            mountPath: /dev/dri
+          # livenessProbe:
+          #   httpGet:
+          #    path: /
+          #    port: 8080
+          #  initialDelaySeconds: 20
+          #  periodSeconds: 5
+      volumes:
+      - name: dev-dvb
+        hostPath:
+          path: /dev/dvb
+          type: Directory
+      - name: dev-dri
+        hostPath:
+          path: /dev/dri
+          type: Directory
+      - name: timeshift
+        emptyDir:
+      # temporary directory for recordings, will eventually be pointed at storage
+      - name: recordings
+        emptyDir:
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: manual
+      resources:
+        requests:
+          storage: 200Mi

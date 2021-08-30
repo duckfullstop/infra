@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: mosquitto-ingress
+spec:
+  entryPoints:
+    - mqtts
+  routes:
+  - match: HostSNI(`*`)
+    kind: Rule
+    services:
+    - name: mosquitto
+      port: 1883
+  tls:
+    hosts:
+    - mqtt.net.theleachfamily.me.uk
+    secretName: mosquitto-cert

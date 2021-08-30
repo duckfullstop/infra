@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zigbee2mqtt
+spec:
+  selector:
+    matchLabels:
+      app: zigbee2mqtt
+  replicas: 1
+  serviceName: "zigbee2mqtt"
+  template:
+    metadata:
+      labels:
+        app: zigbee2mqtt
+    spec:
+      nodeSelector:
+        k8s.partyparrot.moe/hardware_zigbee: "true"
+      initContainers:
+      - name: init-wait-for-mqtt
+        image: busybox
+        command: ['sh', '-c', 'until nc -zv mosquitto.ln-database.svc 1883; do echo waiting for mosquitto; sleep 2; done;']
+      containers:
+        - name: z2m
+          image: ghcr.io/koenkk/zigbee2mqtt:1.21.0
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+            name: http
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "500m"
+            limits:
+              memory: "200Mi"
+              cpu: "1"
+          securityContext:
+            privileged: true
+            procMount: Default
+          env:
+          - name: TZ
+            value: "Europe/London"
+          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY
+            valueFrom:
+              secretKeyRef:
+                name: zigbee2mqtt
+                key: NETWORK_KEY
+          - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
+            valueFrom:
+              secretKeyRef:
+                name: zigbee2mqtt
+                key: MQTT_USER
+          - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: zigbee2mqtt
+                key: MQTT_PASS
+          volumeMounts:
+          - name: data
+            mountPath: /app/data
+          - name: config
+            mountPath: /app/data/configuration.yaml
+            readOnly: true
+            subPath: configuration.yaml
+          - name: usb-zigbee
+            mountPath: /dev/ttyUSB0
+          # livenessProbe:
+          #   httpGet:
+          #    path: /
+          #    port: 8080
+          #  initialDelaySeconds: 20
+          #  periodSeconds: 5
+      volumes:
+      - name: config
+        configMap:
+          name: zigbee2mqtt-config
+      - name: usb-zigbee
+        hostPath:
+          path: /dev/ttyUSB0
+          type: CharDevice
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: manual
+      resources:
+        requests:
+          storage: 50Mi

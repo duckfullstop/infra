@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+    traefik.ingress.kubernetes.io/router.middlewares: identity-system-traefik-forward-auth@kubernetescrd
+  name: traefik-forward-auth
+  namespace: identity-system
+  labels:
+    app: traefik-forward-auth
+spec:
+  rules:
+  - host: traefik.auth.net.theleachfamily.me.uk
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: traefik-forward-auth
+            port:
+              name: http
+  tls:
+  - hosts:
+    - traefik.auth.net.theleachfamily.me.uk
+    secretName: forward-auth-cert-le

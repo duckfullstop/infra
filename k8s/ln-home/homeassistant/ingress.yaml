@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+  name: homeassistant-ingress
+spec:
+  rules:
+  - host: ha.home.theleachfamily.me.uk
+    http: &http_rules
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: home-assistant
+            port:
+              name: http
+  - host: ha.home.theleachfamily.me.uk
+    http: *http_rules
+  tls:
+  - hosts:
+    - ha.home.theleachfamily.me.uk
+    secretName: home-assistant-cert

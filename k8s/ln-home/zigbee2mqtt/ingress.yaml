@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+    traefik.ingress.kubernetes.io/router.middlewares: identity-system-traefik-forward-auth@kubernetescrd
+  name: zigbee2mqtt-ingress
+spec:
+  rules:
+  - host: z2m.home.theleachfamily.me.uk
+    http: &http_rules
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: zigbee2mqtt
+            port:
+              name: http
+  - host: z2m.net.theleachfamily.me.uk
+    http: *http_rules
+  tls:
+  - hosts:
+    - z2m.home.theleachfamily.me.uk
+    - z2m.net.theleachfamily.me.uk
+    secretName: zigbee2mqtt-cert

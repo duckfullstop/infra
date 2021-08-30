@@ -1,0 +1,19 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: openldap-ingress
+spec:
+  entryPoints:
+    - ldaps
+  routes:
+  - match: HostSNI(`*`)
+    kind: Rule
+    services:
+    - name: openldap
+      port: 389
+  tls:
+    hosts:
+    - ldap.theleachfamily.me.uk
+    - ldap.net.theleachfamily.me.uk
+    secretName: openldap-cert
+

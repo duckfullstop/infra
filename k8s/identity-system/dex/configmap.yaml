@@ -1,0 +1,66 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: dex
+  namespace: identity-system
+data:
+  config.yaml: |
+    # This issuer URI must exactly match the one configured in traefik-forward-auth.
+    issuer: https://dex.auth.net.theleachfamily.me.uk/
+    publicURL: https://dex.auth.net.theleachfamily.me.uk/
+
+    # Store session data in Kubernetes custom objects so we don't need a database.
+    storage:
+      type: kubernetes
+      config:
+        inCluster: true
+
+    web:
+      http: 0.0.0.0:5556
+    #  tlsCert: /tls/tls.crt
+    #  tlsKey: /tls/tls.key
+
+    # Here is where you would configure your authentication backend.
+    # See https://github.com/dexidp/dex#connectors for a list of supported connectors.
+    connectors:
+    - type: ldap
+      id: ldap
+      name: identity.leachnet.
+      config:
+        host: ldap.theleachfamily.me.uk:636
+        bindDN: cn=admin,dc=theleachfamily,dc=me,dc=uk
+        bindPW: f94e5753d0a0fda67b0a1c76c2719904c65d7fda285e9742
+        usernamePrompt: Username
+        userSearch:
+          baseDN: ou=users,dc=theleachfamily,dc=me,dc=uk
+          filter: "(objectClass=person)"
+          username: cn
+          idAttr: cn
+          emailAttr: mail
+          nameAttr: displayName
+        groupSearch:
+          baseDN: ou=groups,dc=theleachfamily,dc=me,dc=uk
+          filter: "(objectclass=groupOfNames)"
+          nameAttr: cn
+          userMatchers:
+          - userAttr: cn
+            groupAttr: member
+
+    oauth2:
+      skipApprovalScreen: true
+
+    # This is internal client config for traefik-forward-auth.
+    staticClients:
+    - name: Traefik Forward Auth
+      idEnv: TRAEFIK_FORWARD_AUTH_ID
+      secretEnv: TRAEFIK_FORWARD_AUTH_SECRET
+      redirectURIs:
+      - http://traefik.auth.net.theleachfamily.me.uk/_oauth
+      - https://traefik.auth.net.theleachfamily.me.uk/_oauth
+      - https://esphome.home.theleachfamily.me.uk/_oauth
+      - https://transmission.home.theleachfamily.me.uk/_oauth
+      - https://transmission.ln.duck.moe/_oauth
+      - https://ads.home.theleachfamily.me.uk/_oauth
+      - https://sync.tronity.net.theleachfamily.me.uk/_oauth
+      - https://z2m.home.theleachfamily.me.uk/_oauth
+      - https://z2m.net.theleachfamily.me.uk/_oauth
