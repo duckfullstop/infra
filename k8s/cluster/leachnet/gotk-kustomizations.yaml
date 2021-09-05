@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./k8s
+  path: ./k8s/cluster/leachnet
   prune: true
   sourceRef:
     kind: GitRepository
@@ -15,11 +15,11 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
 metadata:
-  name: flux-system-helm-repositories
+  name: apps
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./k8s/flux-system/helm-chart-repositories
+  path: ./k8s/apps/leachnet
   prune: true
   sourceRef:
     kind: GitRepository
@@ -28,11 +28,11 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
 metadata:
-  name: flux-system-github
+  name: infra
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./k8s/flux-system/github
+  path: ./k8s/infra/leachnet
   prune: true
   sourceRef:
     kind: GitRepository
