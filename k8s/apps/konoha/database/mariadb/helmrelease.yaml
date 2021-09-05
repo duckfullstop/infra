@@ -1,0 +1,23 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: mariadb
+  namespace: database
+spec:
+  interval: 1m0s
+  chart: 
+    spec:
+      chart: mariadb
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami-charts
+        namespace: flux-system
+  values:
+    auth.existingSecret: mariadb
+    fullnameOverride: "mariadb"
+    primary.persistence.storageClass: "local-path"
+    primary.persistence.size: "5Gi"
+    secondary.replicaCount: 0
+    secondary.persistence.size: "5Gi"
+    metrics.enabled: "false"
+    metrics.serviceMonitor.enabled: "false"
