@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+  name: docker-registry
+spec:
+  rules:
+  - host: registry.dev.duck.moe
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: docker-registry
+          servicePort: 5000
+  tls:
+  - hosts:
+    - registry.dev.duck.moe
+    secretName: docker-registry-cert

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docker-registry
+data:
+  registry-config.yml: |
+    version: 0.1
+    log:
+      formatter: json
+      fields:
+        service: registry
+      accesslog: 
+        disabled: false
+    storage:
+      cache:
+        blobdescriptor: inmemory
+      filesystem:
+        rootdirectory: /var/lib/registry
+    http:
+      debug: 
+        addr: :5001
+        prometheus:
+          enabled: true
+          path: "/metrics"
+      addr: :5000
+      headers:
+        X-Content-Type-Options: [nosniff]
+    auth:
+      htpasswd:
+        realm: kagepro
+        path: /auth/htpasswd
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
