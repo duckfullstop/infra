@@ -25,6 +25,6 @@ spec:
       persistence:
         size: "5Gi"
     metrics:
-      enabled: "false"
+      enabled: false
       serviceMonitor:
-        enabled: "false"
+        enabled: false
