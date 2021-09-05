@@ -13,11 +13,18 @@ spec:
         name: bitnami-charts
         namespace: flux-system
   values:
-    auth.existingSecret: mariadb
+    #auth:
+    #  existingSecret: mariadb
     fullnameOverride: "mariadb"
-    primary.persistence.storageClass: "local-path"
-    primary.persistence.size: "5Gi"
-    secondary.replicaCount: 0
-    secondary.persistence.size: "5Gi"
-    metrics.enabled: "false"
-    metrics.serviceMonitor.enabled: "false"
+    primary:
+      persistence:
+        storageClass: "local-path"
+        size: "5Gi"
+    secondary:
+      replicaCount: 0
+      persistence:
+        size: "5Gi"
+    metrics:
+      enabled: "false"
+      serviceMonitor:
+        enabled: "false"
