@@ -6,7 +6,7 @@ resources:
 - configmap.yaml
 - service.yaml
 - ingress.yaml
-- servicemonitor.yaml
+# - servicemonitor.yaml
 - pvc.yaml
 
 namespace: ducknet-devops
