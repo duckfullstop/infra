@@ -1,0 +1,10 @@
+apiVersion: notification.toolkit.fluxcd.io/v1beta1
+kind: Provider
+metadata:
+  name: matrix
+  namespace: flux-system
+spec:
+  type: matrix
+  channel: "!WXGxmEKhkyGqzoYHqW:duck.moe"
+  secretRef:
+    name: notify-matrix-token

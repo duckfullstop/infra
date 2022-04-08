@@ -5,3 +5,4 @@ resources:
 - gotk-kustomizations.yaml
 - gotk-sync.yaml
 - github
+- notifications
