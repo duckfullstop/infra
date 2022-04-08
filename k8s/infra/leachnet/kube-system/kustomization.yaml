@@ -4,5 +4,5 @@ namespace: kube-system
 resources:
 - cert-manager
 - flannel
-- local-path-provisioner
+# - local-path-provisioner
 - traefik
