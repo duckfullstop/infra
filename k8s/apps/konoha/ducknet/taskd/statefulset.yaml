@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: taskd
+  namespace: ducknet
+spec:
+  selector:
+    matchLabels:
+      app: taskd
+  serviceName: "taskd"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: taskd
+    spec:
+      containers:
+      - name: taskd
+        image: andir/docker-taskd:latest
+        imagePullPolicy: "Always"
+        ports:
+          - containerPort: 53589
+            protocol: TCP
+            name: taskd
+        volumeMounts:
+        - name: config
+          mountPath: /var/taskd
+        - name: logs
+          mountPath: /var/taskd/log
+        - name: pki
+          mountPath: /var/taskd/pki
+        - name: certs
+          mountPath: /certs
+        - name: orgs
+          mountPath: /var/taskd/orgs
+      terminationGracePeriodSeconds: 5
+      restartPolicy: Always
+      volumes:
+      - name: config
+        configMap:
+          name: taskd-config
+      - name: certs
+        secret:
+          secretName: taskd-cert
+      - name: logs
+        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: orgs
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Mi
+      storageClassName: local-path
+  - metadata:
+      name: pki
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Mi
+      storageClassName: local-path
+  

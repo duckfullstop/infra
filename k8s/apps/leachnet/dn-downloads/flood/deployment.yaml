@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flood
+  labels:
+    app: flood
+spec:
+  selector:
+    matchLabels:
+      app: flood
+  template:
+    metadata:
+      labels:
+        app: flood
+    spec:
+      containers:
+      - image: jesec/flood:latest
+        name: flood
+        resources:
+            requests:
+              memory: "10Mi"
+              cpu: "50m"
+            limits:
+              memory: "200Mi"
+              cpu: "500m"
+        env:
+        - name: FLOOD_OPTION_port
+          value: "3001"
+        - name: FLOOD_OPTION_auth
+          value: "none"
+        - name: FLOOD_OPTION_rthost
+          value: "rtorrent-rpc.dn-downloads.svc.cluster.local"
+        - name: FLOOD_OPTION_rtport
+          value: "9091"
+        ports:
+        - containerPort: 3001
+          name: http
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: data-rtorrent-0
+      - name: config
+        persistentVolumeClaim:
+          claimName: flood-config

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: duckdotweb
+  labels:
+    app: duckdotweb
+spec:
+  selector:
+    matchLabels:
+      app: duckdotweb
+  template:
+    metadata:
+      labels:
+        app: duckdotweb
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+      - image: registry.dev.duck.moe/duckfullstop/duckdotweb
+        name: web
+        resources:
+          requests:
+            memory: "40Mi"
+            cpu: "50m"
+          limits:
+            memory: "75Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 80
+          name: http

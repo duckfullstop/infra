@@ -14,7 +14,7 @@ spec:
         namespace: flux-system
   values:
     auth.existingSecret: mariadb
-    # auth.rootPassword: sBEOGS6C0x
+    # auth.rootPassword: [redacted]
     # auth.usePasswordFiles: true
     fullnameOverride: "mariadb"
     # TODO move to longhorn

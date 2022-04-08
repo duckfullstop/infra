@@ -1,0 +1,14 @@
+# Traefik-forward-auth itself does not yet support TLS, but we still need to grab the ca.crt for talking to Dex.
+# (note: not presently used)
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: forward-auth-tls
+  namespace: identity-system
+spec:
+  secretName: forward-auth-tls
+  issuerRef:
+    kind: ClusterIssuer
+    name: local-ca
+  dnsNames:
+  - unused

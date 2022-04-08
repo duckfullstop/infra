@@ -11,7 +11,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    path: "/mnt/vault/database/postgres"
+    path: "/persist/service/postgres"
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -19,7 +19,7 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - kumamoto
+          - nagoya
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless-redis
+  namespace: ln-data
+spec:
+  selector:
+    matchLabels:
+      app: paperless-redis
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: paperless-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:6.0
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+            name: redis
+          resources:
+            requests:
+              memory: "20Mi"
+              cpu: "50m"
+            limits:
+              memory: "50Mi"
+              cpu: "150m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless-tika
+  namespace: ln-data
+spec:
+  selector:
+    matchLabels:
+      app: paperless-tika
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: paperless-tika
+    spec:
+      containers:
+        - name: gotenberg
+          image: thecodingmachine/gotenberg:latest
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+            name: gotenberg
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "10m"
+            limits:
+              memory: "250Mi"
+              cpu: "1"
+        - name: tika
+          image: apache/tika:latest
+          ports:
+          - containerPort: 9998
+            protocol: TCP
+            name: tika
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "10m"
+            limits:
+              memory: "250Mi"
+              cpu: "1"

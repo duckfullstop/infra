@@ -1,0 +1,110 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: synapse
+  namespace: ducknet
+spec:
+  interval: 1m0s
+  chart: 
+    spec:
+      chart: matrix-synapse
+      sourceRef:
+        kind: HelmRepository
+        name: ananace-charts
+        namespace: flux-system
+  valuesFrom:
+    - kind: Secret
+      name: matrix-synapse
+      valuesKey: oidcClientId
+      targetPath: extraConfig.oidc_providers[0].client_id
+    - kind: Secret
+      name: matrix-synapse
+      valuesKey: oidcClientSecret
+      targetPath: extraConfig.oidc_providers[0].client_secret
+    - kind: Secret
+      name: matrix-synapse
+      valuesKey: postgresDbName
+      targetPath: extraConfig.externalPostgresql.database
+    - kind: Secret
+      name: matrix-synapse
+      valuesKey: postgresDbUser
+      targetPath: extraConfig.externalPostgresql.username
+    - kind: Secret
+      name: matrix-synapse
+      valuesKey: postgresDbPassword
+      targetPath: extraConfig.externalPostgresql.password
+    - kind: Secret
+      name: matrix-synapse
+      valuesKey: redisPassword
+      targetPath: extraConfig.redis.auth.password
+    # I have literally no idea why the chart requires this to be defined in two places
+    # but it does so here we are
+    - kind: Secret
+      name: matrix-synapse
+      valuesKey: redisPassword
+      targetPath: extraConfig.externalRedis.password
+  values:
+    serverName: duck.moe
+    publicServerName: matrix.duck.moe
+    synapse:
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 512Mi
+        requests:
+          cpu: 250m
+          memory: 128Mi
+    workers:
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+    wellknown:
+      enabled: true
+      useIpv6: true
+      resources:
+        limits:
+          cpu: 5m
+          memory: 15Mi
+        requests:
+          cpu: 5m
+          memory: 15Mi
+    extraConfig:
+      password_config:
+        enabled: false
+      oidc_providers:
+        - idp_id: authentik
+          idp_name: authentik
+          discover: true
+          issuer: "https://auth.duck.moe/application/o/synapse/"
+          scopes:
+            - "openid"
+            - "profile"
+            - "email"
+          user_mapping_provider:
+            config:
+              localpart_template: "{{ user.preferred_username }}"
+              display_name_template: "{{ user.name }}"
+    postgresql:
+      enabled: false
+    externalPostgresql:
+      host: "postgresql.database.svc.cluster.local"
+    redis:
+      enabled: false
+    externalRedis:
+      host: "redis-master.database.svc.cluster.local"
+    persistence:
+      enabled: true
+      existingClaim: "synapse-data"
+    ingress:
+      enabled: true
+      tls:
+        - hosts:
+            - matrix.duck.moe
+          secretName: "matrix-cert"
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-http-prod"
+      

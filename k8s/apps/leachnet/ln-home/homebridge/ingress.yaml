@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+    traefik.ingress.kubernetes.io/router.middlewares: identity-system-authentik-forward-auth@kubernetescrd
+  name: homebridge
+spec:
+  rules:
+  - host: homebridge.home.theleachfamily.me.uk
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: homebridge
+            port:
+              name: http
+  tls:
+  - hosts:
+    - homebridge.home.theleachfamily.me.uk
+    secretName: homebridge-cert

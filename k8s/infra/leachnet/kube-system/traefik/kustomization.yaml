@@ -4,14 +4,5 @@ kind: Kustomization
 namespace: kube-system
 
 resources:
-- crd.yaml
-- cluster-role.yaml
-- cluster-role-binding.yaml
-- service-account.yaml
-- daemonset.yaml
-- service.yaml
-- https-redirect.yaml
+- helmrelease.yaml
 - ingress.yaml
-
-commonLabels:
-  app: traefik

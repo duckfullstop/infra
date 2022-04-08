@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+    traefik.ingress.kubernetes.io/router.middlewares: identity-system-authentik-forward-auth@kubernetescrd
+  name: traefik-admin-ingress
+spec:
+  rules:
+  - host: traefik.k8s.konoha.srv.duck.moe
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: traefik
+            port:
+              name: traefik
+  tls:
+  - hosts:
+    - traefik.k8s.konoha.srv.duck.moe
+    secretName: traefik-admin-cert

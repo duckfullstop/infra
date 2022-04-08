@@ -5,8 +5,8 @@ namespace: ln-home
 
 resources:
 - statefulset.yaml
-- mdns-deployment.yaml
 - service.yaml
+- servicemonitor.yaml
 - ingress.yaml
 - secret.yaml
 - pv.yaml

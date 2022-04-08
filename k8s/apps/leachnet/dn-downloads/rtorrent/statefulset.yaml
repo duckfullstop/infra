@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rtorrent
+spec:
+  selector:
+    matchLabels:
+      app: rtorrent
+  replicas: 1
+  serviceName: "rtorrent-utp"
+  template:
+    metadata:
+      labels:
+        app: rtorrent
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: nagoya
+      #securityContext:
+      #  runAsUser: 1030
+      #  runAsGroup: 65539
+      securityContext:
+        sysctls:
+          - name: fs.nr_open
+            value: "2048"
+      containers:
+        - name: rtorrent
+          image: jesec/rtorrent:latest
+          #image: alpine:edge
+          #command: ["sh"]
+          #stdin: true
+          #tty: true
+          #securityContext:
+          #  allowPrivilegeEscalation: false
+          #  runAsUser: 0
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 9099
+            protocol: TCP
+            name: xmlrpc
+          - containerPort: 51401
+            protocol: TCP
+            name: utptcp
+          - containerPort: 51401
+            protocol: UDP
+            name: utpudp
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "5m"
+            limits:
+              memory: "500Mi"
+              cpu: "2"
+          env:
+          - name: TZ
+            value: "UTC"
+          - name: HOME
+            value: "/config"
+          volumeMounts:
+          #- name: config
+          #  mountPath: /config
+          #- name: data
+          #  mountPath: /data
+          # livenessProbe:
+          #   tcpSocket:
+          #    port: xmlrpc
+          #  initialDelaySeconds: 20
+          #  periodSeconds: 5
+          - name: configmap
+            mountPath: /config/.rtorrent.rc
+            readOnly: true
+            subPath: rtorrent.rc
+          # livenessProbe:
+          #   tcpSocket:
+          #    port: xmlrpc
+          #  initialDelaySeconds: 20
+          #  periodSeconds: 5
+      volumes:
+      - name: configmap
+        configMap:
+          name: rtorrent
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: manual
+      resources:
+        requests:
+          storage: 50Mi
+      volumeName: rtorrent-config
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - ReadWriteMany
+      storageClassName: manual
+      resources:
+        requests:
+          storage: 2Ti
+      volumeName: vault-downloads-duck-torrents

@@ -1,0 +1,29 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kubernetes-dashboard
+  namespace: admin
+spec:
+  interval: 1m0s
+  chart: 
+    spec:
+      chart: kubernetes-dashboard
+      sourceRef:
+        kind: HelmRepository
+        name: kubernetes-dashboard-charts
+        namespace: flux-system
+  values:
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-http-prod"
+        traefik.ingress.kubernetes.io/router.middlewares: identity-system-ak-outpost-dashboard-fauth-outpost@kubernetescrd
+      hosts:
+        - dashboard.k8s.konoha.srv.duck.moe
+      tls:
+        - hosts:
+            - dashboard.k8s.konoha.srv.duck.moe
+          secretName: "k8s-dashboard-cert"
+    protocolHttp: true # Required to allow Traefik to forward requests to this without TLS errors
+    service:
+      externalPort: 80

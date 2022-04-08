@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: znc
+spec:
+  selector:
+    matchLabels:
+      app: znc
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: znc
+    spec:
+      containers:
+        - name: znc
+          image: znc
+          tty: true
+          resources:
+            requests:
+              memory: "20Mi"
+              cpu: "50m"
+            limits:
+              memory: "512Mi"
+              cpu: "100m"
+          volumeMounts:
+          - name: znc-data
+            mountPath: /znc-data
+          - name: certs
+            mountPath: "/certs"
+            
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+            name: http
+          - containerPort: 6697
+            protocol: TCP
+            name: irc-ssl
+      volumes:
+        - name: znc-data
+          persistentVolumeClaim:
+            claimName: znc-data
+        - name: certs
+          secret:
+            secretName: znc-cert

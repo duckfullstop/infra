@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: scrypted
+spec:
+  selector:
+    matchLabels:
+      app: scrypted
+  serviceName: "scrypted"
+  replicas: 0
+  template:
+    metadata:
+      #annotations:
+      #  k8s.v1.cni.cncf.io/networks: macvlan-conf
+      labels:
+        app: scrypted
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: ha
+          image: koush/scrypted
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+            limits:
+              memory: "500Mi"
+              cpu: "1"
+          ports:
+          - containerPort: 9443
+            protocol: TCP
+            name: https
+          securityContext:
+            privileged: true
+            procMount: Default
+          env:
+          - name: TZ
+            value: "Europe/London"
+          volumeMounts:
+          - name: scrypted-data
+            mountPath: /server/volume
+  volumeClaimTemplates:
+  - metadata:
+      name: scrypted-data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: manual
+      resources:
+        requests:
+          storage: 1Gi
+      volumeName: "scrypted-data"

@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: znc-clusterip
+spec:
+  selector:
+    app: znc
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 8080
+  - name: irc
+    protocol: TCP
+    port: 6697
+    targetPort: 6697
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: znc-external
+spec:
+  selector:
+    app: znc
+  ports:
+  - name: irc
+    protocol: TCP
+    port: 6697
+    nodePort: 6697
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+   - IPv4
+   - IPv6
+  type: NodePort

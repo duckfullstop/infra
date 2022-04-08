@@ -1,8 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-- helm-ananace-charts.yaml
-- helm-bitnami-charts.yaml
-- helm-goauthentik-charts.yaml
-- helm-kubernetes-dashboard-charts.yaml
-- helm-traefik-charts.yaml

@@ -7,11 +7,19 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: 100Mi
+    storage: 10Mi
   accessModes:
     - ReadWriteOnce
-  hostPath:
+  local:
     path: "/persist/service/readsb"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - nagoya
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -23,5 +31,6 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 10Mi
   storageClassName: manual
+  volumeName: readsb-autogain

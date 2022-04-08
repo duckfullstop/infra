@@ -1,0 +1,38 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: nextcloud-cron
+  labels:
+    app: nextcloud
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 5
+  successfulJobsHistoryLimit: 2
+  jobTemplate:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      template:
+        metadata:
+          labels:
+            app: nextcloud
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: nextcloud
+              image: nextcloud:latest
+              imagePullPolicy: IfNotPresent
+              command: [ "curl" ]
+              args:
+                - "--fail"
+                - "-L"
+                - "https://files.duck.me.uk/cron.php"
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 25Mi
+                requests:
+                  cpu: 100m
+                  memory: 15Mi

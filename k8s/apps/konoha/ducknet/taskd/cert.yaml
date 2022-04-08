@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: taskd-cert
+  namespace: ducknet
+spec:
+  dnsNames:
+    - tasks.duck.moe
+  secretName: taskd-cert
+  issuerRef:
+    name: letsencrypt-http-prod
+    kind: ClusterIssuer

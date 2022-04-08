@@ -10,5 +10,13 @@ spec:
     storage: 500Mi
   accessModes:
     - ReadWriteOnce
-  hostPath:
+  local:
     path: "/persist/service/homeassistant"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - nagoya

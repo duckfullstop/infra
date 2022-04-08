@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+  name: scrypted-ingress
+spec:
+  rules:
+  - host: scrypted.home.theleachfamily.me.uk
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: scrypted
+            port:
+              name: https
+  tls:
+  - hosts:
+    - scrypted.home.theleachfamily.me.uk
+    secretName: scrypted-cert

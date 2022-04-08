@@ -31,6 +31,23 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: adsbexchange
+spec:
+  ports:
+  - name: http
+    port: 31090
+    targetPort: http
+  - name: mlat
+    port: 30105
+    targetPort: mlat
+  selector:
+    app: adsbexchange
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
   name: tar1090
 spec:
   ports:

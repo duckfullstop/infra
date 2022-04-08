@@ -3,24 +3,22 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-http-prod
-    traefik.ingress.kubernetes.io/router.middlewares: identity-system-traefik-forward-auth@kubernetescrd
-  name: tronity-ingress
+  name: plex-ingress
 spec:
   rules:
-  - host: tronity.net.theleachfamily.me.uk
+  - host: plex.theleachfamily.me.uk
     http: &http_rules
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: tronity-sync
+            name: plex
             port:
               name: http
-  - host: sync.tronity.net.theleachfamily.me.uk
+  - host: plex.net.theleachfamily.me.uk
     http: *http_rules
   tls:
   - hosts:
-    - tronity.theleachfamily.me.uk
-    - sync.tronity.theleachfamily.me.uk
-    secretName: tronity-cert
+    - plex.theleachfamily.me.uk
+    secretName: plex-cert

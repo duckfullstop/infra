@@ -10,8 +10,16 @@ spec:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
-  hostPath:
+  local:
     path: "/persist/service/esphome"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - nagoya
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -25,3 +33,4 @@ spec:
     requests:
       storage: 1Gi
   storageClassName: manual
+  volumeName: "esphome-data"

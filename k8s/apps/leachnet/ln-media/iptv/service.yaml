@@ -12,3 +12,15 @@ spec:
     targetPort: rtsp
   selector:
     app: tvheadend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plexheadend
+spec:
+  ports:
+  - name: http
+    port: 5004
+    targetPort: plex-proxy
+  selector:
+    app: tvheadend

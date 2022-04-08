@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tronity-sync
+  name: plex
 spec:
   ports:
   - name: http
-    port: 8080
+    port: 32400
     targetPort: http
   selector:
-    app: tronity
+    app: plex

@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  labels:
+    app: nextcloud
+spec:
+  selector:
+    matchLabels:
+      app: nextcloud
+      tier: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+        tier: nextcloud
+    spec:
+      initContainers:
+      - name: set-data-dir-permissions
+        image: alpine:3.6
+        command:
+        - chmod
+        - -R  
+        - "0770"
+        - /var/www/html/data
+        volumeMounts:
+        - name: nextcloud-persistent-storage
+          mountPath: /var/www/html/data
+      containers:
+      - image: nextcloud:22
+        name: nextcloud
+        resources:
+            requests:
+              memory: "100Mi"
+              cpu: "50m"
+            limits:
+              memory: "500Mi"
+              cpu: "1000m"
+        env:
+        - name: APACHE_DISABLE_REWRITE_IP
+          value: "1"
+        - name: TRUSTED_PROXIES
+          value: "10.42.0.255/24"
+        - name: NEXTCLOUD_UPDATE
+          value: "1"
+        - name: NEXTCLOUD_TRUSTED_DOMAINS
+          value: "files.duck.moe,files.duck.me.uk"
+        - name: MYSQL_HOST
+          value: "mariadb.database.svc.cluster.local:3306"
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud
+              key: dbName
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud
+              key: dbUsername
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud
+              key: dbPassword
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: nextcloud-persistent-storage
+          mountPath: /var/www/html/data
+        - name: nextcloud-config
+          mountPath: /var/www/html/config
+        - name: nextcloud-apps
+          mountPath: /var/www/html/custom_apps
+      volumes:
+      - name: nextcloud-persistent-storage
+        persistentVolumeClaim:
+          claimName: nextcloud-data
+      - name: nextcloud-config
+        persistentVolumeClaim:
+          claimName: nextcloud-config
+      - name: nextcloud-apps
+        persistentVolumeClaim:
+          claimName: nextcloud-apps
+      securityContext:
+        fsGroup: 33

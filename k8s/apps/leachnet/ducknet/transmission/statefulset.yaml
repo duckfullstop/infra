@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: transmission
+spec:
+  selector:
+    matchLabels:
+      app: transmission
+  replicas: 1
+  serviceName: "transmission"
+  template:
+    metadata:
+      labels:
+        app: transmission
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: nagoya
+      containers:
+        - name: transmission
+          image: ghcr.io/linuxserver/transmission:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 9091
+            protocol: TCP
+            name: http
+          - containerPort: 51400
+            protocol: TCP
+            name: utptcp
+          - containerPort: 51400
+            protocol: UDP
+            name: utpudp
+          resources:
+            requests:
+              memory: "500Mi"
+              cpu: "250m"
+            limits:
+              memory: "3Gi"
+              cpu: "1"
+          env:
+          - name: TRANSMISSION_WEB_HOME
+            value: "/transmission-web-control"
+          - name: TZ
+            value: "Europe/London"
+          - name: PUID
+            value: "1030"
+          - name: PGID
+            value: "65539"
+          volumeMounts:
+          - name: config
+            mountPath: /config
+          - name: data
+            mountPath: /downloads
+          - name: watch
+            mountPath: /watch
+          # livenessProbe:
+          #   httpGet:
+          #    path: /
+          #    port: 8080
+          #  initialDelaySeconds: 20
+          #  periodSeconds: 5
+      volumes:
+      - name: data
+        hostPath:
+          path: /mnt/vault/downloads/duck/transmission/data
+          type: Directory
+      - name: watch
+        hostPath:
+          path: /mnt/vault/downloads/duck/transmission/watch
+          type: Directory
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: manual
+      resources:
+        requests:
+          storage: 100Mi

@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: homebridge
+spec:
+  selector:
+    matchLabels:
+      app: homebridge
+  serviceName: "homebridge"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: homebridge
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: homebridge
+          image: oznu/homebridge:latest
+          resources:
+            requests:
+              memory: "10Mi"
+              cpu: "10m"
+            limits:
+              memory: "300Mi"
+              cpu: "1"
+          ports:
+          - containerPort: 8581
+            protocol: TCP
+            name: http
+          #securityContext:
+          #  privileged: true
+          #  procMount: Default
+          #livenessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #  initialDelaySeconds: 10
+          #  timeoutSeconds: 5
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #  initialDelaySeconds: 5
+          #  timeoutSeconds: 5
+          env:
+          - name: TZ
+            value: "Europe/London"
+          - name: TERMINATE_ON_ERROR
+            value: "1"
+          - name: HOMEBRIDGE_CONFIG_UI
+            value: "1"
+          - name: HOMEBRIDGE_CONFIG_UI_PORT
+            value: "8581"
+          volumeMounts:
+          - name: data
+            mountPath: /homebridge
+          - name: package
+            mountPath: /homebridge/package.json
+            readOnly: true
+            subPath: package.json
+          #- name: config
+          #  mountPath: /homebridge/config.json
+          #  readOnly: true
+          #  subPath: config.json
+      volumes:
+      - name: package
+        configMap:
+          name: homebridge-config
+      #- name: config
+      #  secret:
+      #    secretName: homebridge
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: manual
+      resources:
+        requests:
+          storage: 50Mi
+      volumeName: "homebridge-data"

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xbackbone
+  labels:
+    app: xbackbone
+spec:
+  selector:
+    matchLabels:
+      app: xbackbone
+  template:
+    metadata:
+      labels:
+        app: xbackbone
+    spec:
+      containers:
+      - image: linuxserver/xbackbone:latest
+        name: xbackbone
+        resources:
+            requests:
+              memory: "50Mi"
+              cpu: "50m"
+            limits:
+              memory: "200Mi"
+              cpu: "500m"
+        env:
+        - name: TZ
+          value: "Europe/London"
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: data
+          mountPath: /config
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: xbackbone-data

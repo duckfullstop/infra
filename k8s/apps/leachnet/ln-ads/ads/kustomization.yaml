@@ -6,6 +6,7 @@ namespace: ln-ads
 resources:
 - deployment-readsb.yaml
 - deployment-fr24feed.yaml
+- deployment-adsbexchange.yaml
 - deployment-tar1090.yaml
 - pvc.yaml
 - service.yaml

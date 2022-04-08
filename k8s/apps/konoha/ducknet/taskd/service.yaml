@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: taskd
+spec:
+  selector:
+    app: taskd
+  ports:
+  - name: taskd
+    protocol: TCP
+    port: 53589
+    nodePort: 53589
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+   - IPv4
+   - IPv6
+  type: NodePort

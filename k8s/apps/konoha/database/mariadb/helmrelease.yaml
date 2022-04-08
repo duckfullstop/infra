@@ -13,8 +13,8 @@ spec:
         name: bitnami-charts
         namespace: flux-system
   values:
-    #auth:
-    #  existingSecret: mariadb
+    auth:
+      existingSecret: mariadb
     fullnameOverride: "mariadb"
     primary:
       persistence:

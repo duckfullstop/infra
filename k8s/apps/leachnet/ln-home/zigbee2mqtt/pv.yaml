@@ -10,5 +10,13 @@ spec:
     storage: 50Mi
   accessModes:
     - ReadWriteOnce
-  hostPath:
+  local:
     path: "/persist/service/zigbee2mqtt"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - nagoya

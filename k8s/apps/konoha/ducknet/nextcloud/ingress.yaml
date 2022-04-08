@@ -1,0 +1,34 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: nextcloud-redirectregex
+spec:
+  redirectRegex:
+    permanent: true
+    regex: "https://(.*)/.well-known/(card|cal)dav"
+    replacement: "https://${1}/remote.php/dav/"
+---
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+    traefik.ingress.kubernetes.io/preserve-host: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: ducknet-nextcloud-redirectregex@kubernetescrd
+  name: nextcloud-ingress
+spec:
+  rules:
+  - host: files.duck.moe
+    http: &http_rules
+      paths:
+      - path: /
+        backend:
+          serviceName: nextcloud
+          servicePort: http
+  - host: files.duck.me.uk
+    http: *http_rules
+  tls:
+  - hosts:
+    - files.duck.moe
+    - files.duck.me.uk
+    secretName: nextcloud-cert

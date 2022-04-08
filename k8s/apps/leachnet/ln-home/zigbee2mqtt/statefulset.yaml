@@ -13,16 +13,14 @@ spec:
       labels:
         app: zigbee2mqtt
     spec:
-      nodeSelector:
-        k8s.partyparrot.moe/hardware_zigbee: "true"
       initContainers:
       - name: init-wait-for-mqtt
         image: busybox
         command: ['sh', '-c', 'until nc -zv mosquitto.ln-database.svc 1883; do echo waiting for mosquitto; sleep 2; done;']
       containers:
         - name: z2m
-          image: ghcr.io/koenkk/zigbee2mqtt:1.21.0
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/koenkk/zigbee2mqtt:latest
+          imagePullPolicy: Always
           ports:
           - containerPort: 8080
             protocol: TCP
@@ -30,10 +28,12 @@ spec:
           resources:
             requests:
               memory: "50Mi"
-              cpu: "500m"
+              cpu: "50m"
+              duck.moe/radio-zigbee: "1"
             limits:
               memory: "200Mi"
               cpu: "1"
+              duck.moe/radio-zigbee: "1"
           securityContext:
             privileged: true
             procMount: Default

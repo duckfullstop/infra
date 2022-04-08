@@ -11,7 +11,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    path: "/mnt/vault/database/mariadb/data"
+    path: "/persist/service/mariadb/data"
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -19,7 +19,7 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - kumamoto
+          - nagoya
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -34,7 +34,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    path: "/mnt/vault/database/mariadb/logs"
+    path: "/persist/service/mariadb/logs"
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -42,4 +42,4 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - kumamoto
+          - nagoya

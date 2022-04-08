@@ -1,0 +1,70 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: identity-system
+spec:
+  interval: 1m0s
+  chart: 
+    spec:
+      chart: authentik
+      sourceRef:
+        kind: HelmRepository
+        name: authentik-charts
+        namespace: flux-system
+  valuesFrom:
+    - kind: Secret
+      name: authentik
+      valuesKey: secretKey
+      targetPath: authentik.secret_key
+      optional: false
+    - kind: Secret
+      name: authentik
+      valuesKey: postgresDbName
+      targetPath: authentik.postgresql.name
+      optional: false
+    - kind: Secret
+      name: authentik
+      valuesKey: postgresDbUser
+      targetPath: authentik.postgresql.user
+      optional: false
+    - kind: Secret
+      name: authentik
+      valuesKey: postgresDbPassword
+      targetPath: authentik.postgresql.password
+      optional: false
+    - kind: Secret
+      name: authentik
+      valuesKey: redisPassword
+      targetPath: authentik.redis.password
+      optional: false
+  values:
+    image:
+      tag: 2022.3.3
+    authentik:
+      error_reporting:
+        enabled: true
+      postgresql:
+        host: "postgresql.database.svc.cluster.local"
+      redis:
+        host: "redis-master.database.svc.cluster.local"
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-http-prod"
+      hosts:
+        - host: auth.duck.moe
+          paths:
+            - path: "/"
+              pathType: Prefix
+      tls:
+        - hosts:
+            - auth.duck.moe
+          secretName: "authentik-cert"
+    volumeMounts:
+      - name: media
+        mountPath: /media
+    volumes:
+      - name: media
+        persistentVolumeClaim:
+          claimName: authentik-media

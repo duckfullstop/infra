@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: database
 
 resources:
+- ns.yaml
 - mariadb
-
+- postgres

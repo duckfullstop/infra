@@ -13,8 +13,6 @@ spec:
       labels:
         app: tvheadend
     spec:
-      nodeSelector:
-        k8s.partyparrot.moe/hardware_tv: "true"
       containers:
         - name: tvh
           image: ghcr.io/linuxserver/tvheadend:latest
@@ -26,6 +24,13 @@ spec:
           - containerPort: 9982
             protocol: TCP
             name: rtsp
+          resources:
+            requests:
+              duck.moe/tuner-dvb-s: "2"
+              duck.moe/tuner-dvb-t: "2"
+            limits:
+              duck.moe/tuner-dvb-s: "2"
+              duck.moe/tuner-dvb-t: "2"
           #resources:
           #  requests:
           #    memory: "250Mi"
@@ -60,6 +65,39 @@ spec:
           #    port: 8080
           #  initialDelaySeconds: 20
           #  periodSeconds: 5
+        - name: plexheadend
+          image: wrboyce/plexheadend:latest
+          ports:
+          - containerPort: 5004
+            protocol: TCP
+            name: plex-proxy
+          env:
+          - name: PLEXHEADEND_TVH_USER
+            value: "plex"
+          - name: PLEXHEADEND_TVH_PASS
+            value: "pl0x"
+          - name: PLEXHEADEND_TVH_PORT
+            value: "9981"
+          - name: PLEXHEADEND_TVH_HOST
+            value: "tvheadend.ln-media.svc.cluster.local"
+          - name: PLEXHEADEND_TUNERS
+            value: "2"
+          - name: PLEXHEADEND_PROXY_LISTEN
+            value: "5004"
+          - name: PLEXHEADEND_PROXY_HOSTNAME
+            value: "tvheadend.ln-media.svc.cluster.local"
+          livenessProbe:
+            httpGet:
+              path: /discover.json
+              port: 5004
+            initialDelaySeconds: 5
+            periodSeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /discover.json
+              port: 5004
+            initialDelaySeconds: 5
+            periodSeconds: 60
       volumes:
       - name: dev-dvb
         hostPath:

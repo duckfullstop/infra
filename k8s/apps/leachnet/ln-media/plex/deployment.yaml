@@ -16,8 +16,6 @@ spec:
       labels:
         app: plex
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: kumamoto
       containers:
         - name: plex
           image: plexinc/pms-docker:latest
@@ -38,7 +36,7 @@ spec:
             - name: PLEX_GID
               value: "65520"
             - name: ADVERTISE_IP
-              value: "https://plex.theleachfamily.me.uk"
+              value: "https://plex.net.theleachfamily.me.uk"
           readinessProbe:
             httpGet:
               path: /identity
@@ -51,20 +49,35 @@ spec:
               port: 32400
             initialDelaySeconds: 10
             timeoutSeconds: 10
+          securityContext:
+            # Required for hardware transcode on /dev/dri
+            privileged: true
           volumeMounts:
           - name: config
             mountPath: /config
+          - name: dev-dri
+            mountPath: /dev/dri
           - name: transcode
             mountPath: /transcode
-          - name: data_downloads_duck
+          - name: data-downloads-duck
             mountPath: /data/downloads/duck
-          - name: data_pvr
-            mountpath: /data/pvr
-          - name: data_video
-            mountpath: /data/video
+          - name: data-media-pvr
+            mountPath: /data/media/pvr
+          # - name: data_video
+          #   mountpath: /data/video
       volumes:
+      - name: dev-dri
+        hostPath:
+          path: /dev/dri
+          type: Directory
       - name: config
         persistentVolumeClaim:
           claimName: plex-config
       - name: transcode
         emptyDir:
+      - name: data-downloads-duck
+        persistentVolumeClaim:
+          claimName: plex-downloads-duck
+      - name: data-media-pvr
+        persistentVolumeClaim:
+          claimName: plex-media-pvr

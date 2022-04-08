@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: ducknet-devops
 
 resources:
+- ns.yaml
 - registry
 

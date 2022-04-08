@@ -18,10 +18,13 @@ spec:
       kind: DaemonSet
     experimental:
       http3:
-        enabled: true
+        enabled: false
     ingressRoute:
       dashboard:
         enabled: true
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-http-prod
+          traefik.ingress.kubernetes.io/router.middlewares: identity-system-authentik-forward-auth@kubernetescrd
     providers:
       kubernetesCRD:
         enabled: true
@@ -40,9 +43,11 @@ spec:
         exposedPort: 443
         port: 443
         nodePort: 443
-        http3: true
+        http3: false
         tls:
           enabled: true
+      traefik:
+        expose: true
       mqtts:
         port: 8883
         expose: true
@@ -51,11 +56,12 @@ spec:
         protocol: TCP
     service:
       enabled: true
-      type: NodePort
-      ipFamilyPolicy: PreferDualStack
+      externalTrafficPolicy: Local
       ipFamilies:
       - IPv4
       - IPv6
+      ipFamilyPolicy: PreferDualStack
+      type: NodePort
     securityContext:
       capabilities:
         drop: [ALL]

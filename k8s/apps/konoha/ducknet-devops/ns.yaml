@@ -1,0 +1,6 @@
+apiVersion: "v1"
+kind: Namespace
+metadata:
+  name: ducknet-devops
+  labels:
+    name: ducknet-devops

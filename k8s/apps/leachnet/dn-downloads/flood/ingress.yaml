@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+    # traefik.ingress.kubernetes.io/router.middlewares: identity-system-authentik-forward-auth@kubernetescrd
+  name: flood
+spec:
+  rules:
+  - host: flood.net.theleachfamily.me.uk
+    http: &http_rules
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: flood-http
+            port:
+              name: http
+#  - host: flood.downloads.duck.moe
+#    http: *http_rules
+  tls:
+  - hosts:
+    - flood.net.theleachfamily.me.uk
+    secretName: flood-cert

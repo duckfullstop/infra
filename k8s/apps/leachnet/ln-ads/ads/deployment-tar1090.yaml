@@ -44,6 +44,10 @@ spec:
               secretKeyRef:
                 name: ads-b
                 key: SITE_LONGITUDE
+          - name: MLATHOST
+            value: "adsbexchange"
+          - name: MLATPORT
+            value: "30105"
           #livenessProbe:
           #  exec:
           #    command:
@@ -60,4 +64,4 @@ spec:
           emptyDir:
             medium: "Memory"
         - name: varlog
-          emptyDir:
+          emptyDir: {}

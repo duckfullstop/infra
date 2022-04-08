@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+    traefik.ingress.kubernetes.io/router.middlewares: identity-system-authentik-forward-auth@kubernetescrd
+  name: owntracks-ingress
+spec:
+  rules:
+  - host: owntracks.theleachfamily.me.uk
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: owntracks-frontend
+            port: 
+              name: http
+  tls:
+  - hosts:
+    - owntracks.theleachfamily.me.uk
+    secretName: owntracks-cert

@@ -1,0 +1,87 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: vaultwarden
+  namespace: ln-data
+spec:
+  interval: 5m0s
+  chart: 
+    spec:
+      chart: vaultwarden
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  valuesFrom:
+    - kind: Secret
+      name: vaultwarden
+      valuesKey: admin-token
+      targetPath: env.ADMIN_TOKEN
+      optional: true
+    - kind: Secret
+      name: vaultwarden
+      valuesKey: mail-host
+      targetPath: env.SMTP_HOST
+      optional: true
+    - kind: Secret
+      name: vaultwarden
+      valuesKey: mail-port
+      targetPath: env.SMTP_PORT
+      optional: true
+    - kind: Secret
+      name: vaultwarden
+      valuesKey: mail-security
+      targetPath: env.SMTP_SECURITY
+      optional: true
+    - kind: Secret
+      name: vaultwarden
+      valuesKey: mail-user
+      targetPath: env.SMTP_USERNAME
+      optional: true
+    - kind: Secret
+      name: vaultwarden
+      valuesKey: mail-password
+      targetPath: env.SMTP_PASSWORD
+      optional: true
+    - kind: Secret
+      name: vaultwarden
+      valuesKey: mail-auth-mechanism
+      targetPath: env.SMTP_AUTH_MECHANISM
+      optional: true
+  values:
+    env:
+      DOMAIN: https://bitwarden.theleachfamily.me.uk
+      INVITATION_ORG_NAME: "leachnet."
+      SMTP_FROM: "bitwarden@theleachfamily.me.uk"
+      SIGNUPS_ALLOWED: "false"
+      SIGNUPS_VERIFY: "true"
+      WEBSOCKET_ENABLED: "true"
+    ingress:
+      main:
+        enabled: true
+        hosts:
+          - host: bitwarden.theleachfamily.me.uk
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  port: 80
+              - path: /notifications/hub/negotiate
+                pathType: Prefix
+                service:
+                  port: 80
+              - path: /notifications/hub
+                pathType: Prefix
+                service:
+                  port: 3012
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-http-prod
+        pathType: ImplementationSpecific
+        tls:
+          - hosts:
+              - bitwarden.theleachfamily.me.uk
+            secretName: "vaultwarden-cert"
+    persistence:
+      config:
+        enabled: true
+        existingClaim: "vaultwarden"
