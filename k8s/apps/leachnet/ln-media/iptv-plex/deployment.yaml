@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: antennas
+  namespace: ln-media
+spec:
+  selector:
+    matchLabels:
+      app: antennas
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        app: antennas
+    spec:
+      containers:
+        - name: antennas
+          image: thejf/antennas:4.1.0
+          resources:
+            requests:
+              memory: "10Mi"
+              cpu: "5m"
+            limits:
+              memory: "50Mi"
+              cpu: "50m"
+          ports:
+            - name: http
+              containerPort: 5004
+          env:
+            - name: ANTENNAS_URL
+              value: "http://tvheadend.ln-media.svc.cluster.local:5004"
+            - name: TVHEADEND_URL
+              valueFrom:
+                secretKeyRef:
+                  name: antennas
+                  key: tvhUrl
+                  optional: false
+            - name: TUNER_COUNT
+              value: "4"
+          readinessProbe:
+            httpGet:
+              path: /discover.json
+              port: 5004
+            initialDelaySeconds: 5
+            timeoutSeconds: 60
+          livenessProbe:
+            httpGet:
+              path: /discover.json
+              port: 5004
+            initialDelaySeconds: 5
+            timeoutSeconds: 60
+

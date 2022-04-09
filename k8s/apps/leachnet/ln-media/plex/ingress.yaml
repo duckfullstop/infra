@@ -6,8 +6,8 @@ metadata:
   name: plex-ingress
 spec:
   rules:
-  - host: plex.theleachfamily.me.uk
-    http: &http_rules
+  - host: plex.net.theleachfamily.me.uk
+    http:
       paths:
       - path: /
         pathType: Prefix
@@ -16,9 +16,7 @@ spec:
             name: plex
             port:
               name: http
-  - host: plex.net.theleachfamily.me.uk
-    http: *http_rules
   tls:
   - hosts:
-    - plex.theleachfamily.me.uk
+    - plex.net.theleachfamily.me.uk
     secretName: plex-cert
