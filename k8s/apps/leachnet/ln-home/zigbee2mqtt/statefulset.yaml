@@ -19,7 +19,7 @@ spec:
         command: ['sh', '-c', 'until nc -zv mosquitto.ln-database.svc 1883; do echo waiting for mosquitto; sleep 2; done;']
       containers:
         - name: z2m
-          image: ghcr.io/koenkk/zigbee2mqtt:1.24.0
+          image: ghcr.io/koenkk/zigbee2mqtt:1.25
           imagePullPolicy: Always
           ports:
           - containerPort: 8080
@@ -40,21 +40,6 @@ spec:
           env:
           - name: TZ
             value: "Europe/London"
-          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY
-            valueFrom:
-              secretKeyRef:
-                name: zigbee2mqtt
-                key: NETWORK_KEY
-          - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
-            valueFrom:
-              secretKeyRef:
-                name: zigbee2mqtt
-                key: MQTT_USER
-          - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: zigbee2mqtt
-                key: MQTT_PASS
           volumeMounts:
           - name: data
             mountPath: /app/data
@@ -64,12 +49,31 @@ spec:
             subPath: configuration.yaml
           - name: usb-zigbee
             mountPath: /dev/ttyUSB0
-          # livenessProbe:
-          #   httpGet:
-          #    path: /
-          #    port: 8080
-          #  initialDelaySeconds: 20
-          #  periodSeconds: 5
+          - name: secrets
+            mountPath: /app/data/secret.yaml
+            readOnly: true
+            subPath: secret.yaml
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            failureThreshold: 30
+            timeoutSeconds: 1
+            periodSeconds: 5
       volumes:
       - name: config
         configMap:
@@ -78,6 +82,10 @@ spec:
         hostPath:
           path: /dev/ttyUSB0
           type: CharDevice
+      - name: secrets
+        secret:
+          secretName: zigbee2mqtt
+          optional: false
   volumeClaimTemplates:
   - metadata:
       name: data
