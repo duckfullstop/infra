@@ -15,12 +15,12 @@ spec:
   valuesFrom:
     - kind: Secret
       name: postgres
-      valuesKey: postgresPassword
+      valuesKey: auth-postgresPassword
       targetPath: auth.postgresPassword
       optional: false
   values:
     image:
-      tag: 11
+      tag: 14
     auth:
       database: "postgresql"
     primary:
