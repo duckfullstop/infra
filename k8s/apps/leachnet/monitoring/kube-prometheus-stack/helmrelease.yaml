@@ -17,14 +17,6 @@ spec:
       name: monitoring-stack
       valuesKey: grafanaAdminPassword
       targetPath: grafana.adminPassword
-    - kind: Secret
-      name: monitoring-stack
-      valuesKey: grafanaOauthClientId
-      targetPath: grafana.grafana\.ini.auth.generic_oauth.client_id
-    - kind: Secret
-      name: monitoring-stack
-      valuesKey: grafanaOauthClientSecret
-      targetPath: grafana.grafana\.ini.auth.generic_oauth.client_secret
   values:
     alertmanager:
       enabled: true
@@ -44,6 +36,12 @@ spec:
             secretName: "alertmanager-cert"
     grafana:
       enabled: true
+      extraSecretMounts:
+        - name: secrets
+          secretName: monitoring-stack
+          defaultMode: 0440
+          mountPath: /etc/secrets
+          readOnly: true
       grafana.ini:
         server:
           root_url: https://grafana.net.theleachfamily.me.uk
@@ -54,6 +52,8 @@ spec:
           name: leachnet.
           enabled: true
           scopes: openid email profile
+          client_id: $__file{/etc/secrets/grafanaOauthClientId}
+          client_secret: $__file{/etc/secrets/grafanaOauthClientSecret}
           auth_url: https://auth.duck.moe/application/o/authorize/
           token_url: https://auth.duck.moe/application/o/token/
           api_url: https://auth.duck.moe/application/o/userinfo/
