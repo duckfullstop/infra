@@ -2,6 +2,7 @@
     "private": true,
     "description": "This file keeps track of which plugins should be installed.",
     "dependencies": {
-      "homebridge-unifi-protect": "^5.5.0"
+      "homebridge-unifi-protect": "^5.5.0",
+      "homebridge-nest": "^4.6.0"
     }
 }

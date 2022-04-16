@@ -20,10 +20,10 @@ spec:
           image: oznu/homebridge:latest
           resources:
             requests:
-              memory: "10Mi"
-              cpu: "10m"
+              memory: "100Mi"
+              cpu: "150m"
             limits:
-              memory: "300Mi"
+              memory: "500Mi"
               cpu: "1"
           ports:
           - containerPort: 8581
