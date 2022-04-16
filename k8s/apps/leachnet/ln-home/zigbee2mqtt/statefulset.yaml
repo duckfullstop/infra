@@ -19,7 +19,7 @@ spec:
         command: ['sh', '-c', 'until nc -zv mosquitto.ln-database.svc 1883; do echo waiting for mosquitto; sleep 2; done;']
       containers:
         - name: z2m
-          image: ghcr.io/koenkk/zigbee2mqtt:1.25
+          image: ghcr.io/koenkk/zigbee2mqtt:1.25.0
           imagePullPolicy: Always
           ports:
           - containerPort: 8080

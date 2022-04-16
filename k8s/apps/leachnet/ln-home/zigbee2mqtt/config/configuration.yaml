@@ -1,0 +1,30 @@
+advanced:
+  last_seen: ISO_8601
+  log_level: info
+  log_output:
+    - console
+  network_key: '!secret NETWORK_KEY'
+  report: true
+  rtscts: false
+availability:
+  active:
+    timeout: 5
+  passive:
+    timeout: 1500
+devices: 
+  - devices.yaml
+frontend:
+  port: 8080
+groups: 
+  - groups.yaml
+homeassistant:
+  legacy_entity_attributes: false
+  legacy_triggers: false
+mqtt:
+  base_topic: zigbee2mqtt
+  user: '!secret MQTT_USER'
+  password: '!secret MQTT_PASS'
+  server: 'mqtt://mosquitto.ln-database.svc.cluster.local:1883'
+permit_join: false
+serial:
+  port: /dev/ttyUSB0

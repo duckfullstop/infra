@@ -8,5 +8,10 @@ resources:
 - service.yaml
 - ingress.yaml
 - secret.yaml
-- configmap.yaml
 - pv.yaml
+
+configMapGenerator:
+- name: zigbee2mqtt-config
+  namespace: ln-home
+  files:
+  - config/configuration.yaml
