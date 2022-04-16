@@ -40,7 +40,7 @@ spec:
       optional: false
   values:
     image:
-      tag: 2022.3.3
+      tag: 2022.4.1
     authentik:
       error_reporting:
         enabled: true
@@ -57,9 +57,14 @@ spec:
           paths:
             - path: "/"
               pathType: Prefix
+        - host: auth.id.theleachfamily.me.uk
+          paths:
+            - path: "/"
+              pathType: Prefix
       tls:
         - hosts:
             - auth.duck.moe
+            - auth.id.theleachfamily.me.uk
           secretName: "authentik-cert"
     volumeMounts:
       - name: media
