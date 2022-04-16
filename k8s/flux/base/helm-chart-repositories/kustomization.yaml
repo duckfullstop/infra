@@ -6,6 +6,7 @@ resources:
 - goauthentik.yaml
 - kubernetes-dashboard.yaml
 - k8s-at-home.yaml
+- nextcloud.yaml
 - prometheus-community.yaml
 - sealed-secrets.yaml
 - traefik.yaml
