@@ -5,5 +5,5 @@ resources:
 - ns.yaml
 - authentik
 # - dex
-- ldap
+# - ldap
 # - traefik-forward-auth
