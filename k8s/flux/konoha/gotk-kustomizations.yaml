@@ -4,7 +4,7 @@ metadata:
   name: base
   namespace: flux-system
 spec:
-  interval: 10m0s
+  interval: 1h
   path: ./k8s/flux/base
   prune: true
   sourceRef:
@@ -17,7 +17,7 @@ metadata:
   name: flux-system
   namespace: flux-system
 spec:
-  interval: 10m0s
+  interval: 1h
   path: ./k8s/flux/konoha
   prune: true
   sourceRef:
@@ -31,7 +31,7 @@ metadata:
   name: apps
   namespace: flux-system
 spec:
-  interval: 10m0s
+  interval: 1h
   path: ./k8s/apps/konoha
   prune: true
   sourceRef:
@@ -44,7 +44,7 @@ metadata:
   name: infra
   namespace: flux-system
 spec:
-  interval: 10m0s
+  interval: 1h
   path: ./k8s/infra/konoha
   prune: true
   sourceRef:
