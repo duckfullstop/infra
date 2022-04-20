@@ -70,13 +70,13 @@ spec:
         enabled: true
         fromAddress: "nextcloud"
         domain: "theleachfamily.me.uk"
-      extraVolumes:
-       - name: hugepages
-         emptyDir:
-           medium: HugePages-2Mi
-      extraVolumeMounts:
-        - name: hugepages
-          mountPath: /dev/hugepages
+      # extraVolumes:
+      #  - name: hugepages
+      #    emptyDir:
+      # extraVolumeMounts:
+      #      medium: HugePages-2Mi
+      #   - name: hugepages
+      #     mountPath: /dev/hugepages
     internalDatabase:
       enabled: false
     externalDatabase:
@@ -101,11 +101,11 @@ spec:
       enabled: true
     resources:
       requests:
-        hugepages-2Mi: 250Mi
+        # hugepages-2Mi: 20Mi
         memory: 100Mi
       limits:
         # limit and request must be the same for hugepages. They are a fixed resource.
-        hugepages-2Mi: 250Mi
+        # hugepages-2Mi: 20Mi
         memory: 1Gi
     startupProbe:
       enabled: true
