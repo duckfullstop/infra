@@ -4,6 +4,7 @@ resources:
 - ananace.yaml
 - bitnami.yaml
 - goauthentik.yaml
+- jetstack.yaml
 - kubernetes-dashboard.yaml
 - k8s-at-home.yaml
 - nextcloud.yaml

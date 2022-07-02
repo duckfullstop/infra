@@ -1,5 +1,5 @@
 resources:
-  - cert-manager.yaml
-  - podmonitor.yaml
+  - ns.yaml
+  - helmrelease.yaml
   - le-http-clusterissuer.yaml
   - localca-clusterissuer.yaml
