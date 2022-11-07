@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: kube-system
 resources:
 - cert-manager
+- coredns
 # - local-path-provisioner
 - metrics-server
 - traefik
