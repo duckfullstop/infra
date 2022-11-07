@@ -3,6 +3,6 @@ kind: Kustomization
 namespace: kube-system
 resources:
 - cert-manager
-- flannel
 # - local-path-provisioner
+- metrics-server
 - traefik
