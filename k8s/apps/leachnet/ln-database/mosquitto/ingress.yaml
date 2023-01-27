@@ -9,8 +9,9 @@ spec:
   - match: HostSNI(`*`)
     services:
     - name: mosquitto
-      port: 1883
+      port: 8883
   tls:
     domains:
-    - main: mqtt.net.theleachfamily.me.uk
+    - main: "mqtt.net.theleachfamily.me.uk"
     secretName: mosquitto-cert
+    passthrough: true

@@ -4,7 +4,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: mosquitto-cert
-  namespace: ppc
+  namespace: ln-database
 spec:
   dnsNames:
     - mqtt.net.theleachfamily.me.uk

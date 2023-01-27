@@ -27,15 +27,20 @@ spec:
           - containerPort: 1883
             protocol: TCP
             name: mqtt
+          - containerPort: 8883
+            protocol: TCP
+            name: mqtts
           volumeMounts:
           - name: data
             mountPath: /mosquitto/data
+          - name: certs
+            mountPath: /mosquitto/certs
           - name: config
             mountPath: /mosquitto/config/mosquitto.conf
             readOnly: true
             subPath: mosquitto.conf
           - name: passwd
-            mountPath: /secrets
+            mountPath: /mosquitto/secrets
       volumes:
       - name: data
         persistentVolumeClaim:
@@ -46,3 +51,6 @@ spec:
       - name: passwd
         secret:
           secretName: mosquitto-passwd
+      - name: certs
+        secret:
+          secretName: mosquitto-cert
