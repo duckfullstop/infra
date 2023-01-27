@@ -4,11 +4,15 @@ resources:
 - ananace.yaml
 - authelia.yaml
 - bitnami.yaml
+- coredns.yaml
 - goauthentik.yaml
+- itzg.yaml
 - jaeger.yaml
 - jetstack.yaml
 - kubernetes-dashboard.yaml
 - k8s-at-home.yaml
+- metallb.yaml
+- metrics-server.yaml
 - nextcloud.yaml
 - openldap.yaml
 - prometheus-community.yaml

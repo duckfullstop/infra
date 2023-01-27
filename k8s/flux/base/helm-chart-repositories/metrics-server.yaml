@@ -1,9 +1,9 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
-  name: traefik-charts
+  name: metrics-server
   namespace: flux-system
 spec:
   interval: 24h
-  url: https://helm.traefik.io/traefik
+  url: https://kubernetes-sigs.github.io/metrics-server/
   timeout: 3m

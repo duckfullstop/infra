@@ -1,9 +1,9 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
-  name: traefik-charts
+  name: itzg
   namespace: flux-system
 spec:
   interval: 24h
-  url: https://helm.traefik.io/traefik
-  timeout: 3m
+  url: https://itzg.github.io/minecraft-server-charts/
+  timeout: 5m
