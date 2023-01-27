@@ -12,6 +12,10 @@ spec:
         kind: HelmRepository
         name: prometheus-community-charts
         namespace: flux-system
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
   valuesFrom:
     - kind: Secret
       name: monitoring-stack
@@ -26,7 +30,7 @@ spec:
         enabled: true
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-http-prod
-          traefik.ingress.kubernetes.io/router.middlewares: identity-system-authentik-forward-auth@kubernetescrd
+          traefik.ingress.kubernetes.io/router.middlewares: identity-system-ak-outpost-leachnet-proxy-outpost@kubernetescrd
         hosts:
           - alertmanager.prometheus.net.theleachfamily.me.uk
         pathType: ImplementationSpecific
@@ -54,9 +58,9 @@ spec:
           scopes: openid email profile
           client_id: $__file{/etc/secrets/grafanaOauthClientId}
           client_secret: $__file{/etc/secrets/grafanaOauthClientSecret}
-          auth_url: https://auth.duck.moe/application/o/authorize/
-          token_url: https://auth.duck.moe/application/o/token/
-          api_url: https://auth.duck.moe/application/o/userinfo/
+          auth_url: https://auth.theleachfamily.me.uk/application/o/authorize/
+          token_url: https://auth.theleachfamily.me.uk/application/o/token/
+          api_url: https://auth.theleachfamily.me.uk/application/o/userinfo/
           role_attribute_path: contains(groups[*], 'Number 10 Superop') && 'Admin' ||  contains(groups[*], 'Number 10 Operator') && 'Editor' || 'Viewer'
       ingress:
         enabled: true
@@ -87,7 +91,7 @@ spec:
         enabled: true
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-http-prod"
-          traefik.ingress.kubernetes.io/router.middlewares: identity-system-authentik-forward-auth@kubernetescrd
+          traefik.ingress.kubernetes.io/router.middlewares: identity-system-ak-outpost-leachnet-proxy-outpost@kubernetescrd
         hosts:
           - prometheus.net.theleachfamily.me.uk
         pathType: ImplementationSpecific
@@ -100,7 +104,8 @@ spec:
         releaseNamespace: true
         additional:
           - cert-manager
-          - ducknet
+          - dn-downloads
+          - dn-games
           - flux-system
           - identity-system
           - kube-system
@@ -109,6 +114,7 @@ spec:
           - ln-database
           - ln-home
           - ln-media
+          - ln-owntracks
       prometheusSpec:
         podMonitorNamespaceSelector:
           any: true
