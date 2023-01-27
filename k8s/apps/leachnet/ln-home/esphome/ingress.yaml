@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-http-prod
-    traefik.ingress.kubernetes.io/router.middlewares: identity-system-authentik-forward-auth@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: identity-system-ak-outpost-leachnet-proxy-outpost@kubernetescrd
   name: esphome-ingress
 spec:
   rules:
