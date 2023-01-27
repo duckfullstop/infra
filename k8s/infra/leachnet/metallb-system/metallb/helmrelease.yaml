@@ -1,0 +1,22 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: metallb
+  namespace: metallb-system
+spec:
+  interval: 1m0s
+  chart: 
+    spec:
+      chart: metallb
+      sourceRef:
+        kind: HelmRepository
+        name: metallb
+        namespace: flux-system
+  values:
+    prometheus:
+      namespace: "monitoring"
+      prometheusRule:
+        enabled: true
+      serviceAccount: "prometheus-k8s"
+      serviceMonitor:
+        enabled: true

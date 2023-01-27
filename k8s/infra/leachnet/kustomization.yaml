@@ -4,3 +4,4 @@ resources:
 - flux-system
 - identity-system
 - kube-system
+- metallb-system
