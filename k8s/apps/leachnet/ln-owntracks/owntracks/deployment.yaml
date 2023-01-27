@@ -30,6 +30,8 @@ spec:
         #  value: "/etc/ssl/certs/ca-cert-DST_Root_CA_X3.pem"
         - name: OTR_HOST
           value: "mosquitto.ln-database.svc.cluster.local"
+        - name: OTR_HTTPPREFIX
+          value: "https://recorder.owntracks.theleachfamily.me.uk"
         - name: OTR_PORT
           value: "1883"
         - name: OTR_USER
@@ -39,19 +41,20 @@ spec:
         - name: OTR_PRECISION
           value: "7"
         - name: OTR_GEOKEY
-          value: "opencage:60581ff8c4604c8f94d458ca20d479d7"
+          value: "cb2ed57fe2c19abe4dea40a7a653206d715f6e381a558749"
         livenessProbe:
           httpGet:
             path: /
             port: http
           initialDelaySeconds: 10
-          timeoutSeconds: 5
+          timeoutSeconds: 10
+          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 5
+          timeoutSeconds: 1
+          failureThreshold: 30
         ports:
         - containerPort: 8083
           name: http
@@ -103,8 +106,8 @@ spec:
           httpGet:
             path: /
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 5
+          failureThreshold: 30
+          timeoutSeconds: 1
         ports:
         - containerPort: 80
           name: http
