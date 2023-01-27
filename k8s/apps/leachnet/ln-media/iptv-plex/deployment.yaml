@@ -18,11 +18,11 @@ spec:
           image: thejf/antennas:4.1.0
           resources:
             requests:
-              memory: "10Mi"
+              memory: "75Mi"
               cpu: "5m"
             limits:
-              memory: "50Mi"
-              cpu: "50m"
+              memory: "100Mi"
+              cpu: "100m"
           ports:
             - name: http
               containerPort: 5004
@@ -37,16 +37,20 @@ spec:
                   optional: false
             - name: TUNER_COUNT
               value: "4"
+          startupProbe:
+            httpGet:
+              path: /discover.json
+              port: http
+            failureThreshold: 12
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /discover.json
-              port: 5004
-            initialDelaySeconds: 5
+              port: http
             timeoutSeconds: 60
           livenessProbe:
             httpGet:
               path: /discover.json
-              port: 5004
-            initialDelaySeconds: 5
+              port: http
             timeoutSeconds: 60
 
