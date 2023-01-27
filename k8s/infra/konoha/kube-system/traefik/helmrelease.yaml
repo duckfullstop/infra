@@ -17,14 +17,16 @@ spec:
       enabled: true
       kind: DaemonSet
     experimental:
+      kubernetesGateway:
+        # enabled: true
+        enabled: false
       http3:
         enabled: false
     ingressRoute:
       dashboard:
         enabled: true
         annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-http-prod
-          traefik.ingress.kubernetes.io/router.middlewares: identity-system-authentik-forward-auth@kubernetescrd
+          traefik.ingress.kubernetes.io/router.middlewares: identity-system-ak-outpost-ducknet-proxy-outpost@kubernetescrd
     providers:
       kubernetesCRD:
         enabled: true
@@ -54,9 +56,22 @@ spec:
         exposedPort: 8883
         nodePort: 8883
         protocol: TCP
+      ldaps:
+        port: 636
+        expose: true
+        exposedPort: 636
+        nodePort: 636
+        protocol: TCP
+      ircs:
+        port: 6697
+        expose: true
+        exposedPort: 6699
+        nodePort: 6699
+        protocol: TCP
     service:
       enabled: true
-      externalTrafficPolicy: Local
+      spec:
+        externalTrafficPolicy: Local
       ipFamilies:
       - IPv4
       - IPv6
@@ -70,3 +85,13 @@ spec:
       runAsGroup: 0
       runAsNonRoot: false
       runAsUser: 0
+    # tracing:
+    additionalArguments:
+      - "--tracing.jaeger=true"
+      - "--tracing.serviceName=traefik"
+      - "--tracing.jaeger.localAgentHostPort=jaeger-agent.ducknet-devops.svc.cluster.local:6831"
+      - "--tracing.jaeger.gen128Bit=false"
+      - "--tracing.jaeger.samplingType=const"
+      - "--tracing.jaeger.samplingParam=1"
+      - "--tracing.jaeger.traceContextHeaderName=x-b3-traceid"
+      - "--tracing.jaeger.propagation=b3"
