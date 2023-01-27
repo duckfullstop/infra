@@ -3,4 +3,6 @@ kind: Kustomization
 namespace: identity-system
 resources:
 - ns.yaml
-- authentik
+- authelia
+# - authentik
+- ldap

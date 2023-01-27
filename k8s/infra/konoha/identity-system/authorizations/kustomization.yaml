@@ -1,7 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: identity-system
 resources:
-- helmrelease.yaml
-# - middleware.yaml
-- pvc.yaml
-- secret.yaml
+- crb-clusteradmins.yaml

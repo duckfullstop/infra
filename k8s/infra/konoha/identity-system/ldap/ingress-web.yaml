@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+  name: phpldapadmin-ingress
+spec:
+  rules:
+  - host: ldap.id.duck.moe
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: phpldapadmin
+            port:
+              name: http
+  tls:
+  - hosts:
+    - ldap.id.duck.moe
+    secretName: openldap-cert

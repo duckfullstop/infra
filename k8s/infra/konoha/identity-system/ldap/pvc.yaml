@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: openldap-db
+  labels:
+    type: local
+spec:
+  storageClassName: local-path
+  capacity:
+    storage: 10Mi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: "/persist/service/openldap/db"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - nagoya
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: openldap-db
+  namespace: identity-system
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+  storageClassName: manual
+  volumeName: openldap-db
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: openldap-config
+  labels:
+    type: local
+spec:
+  storageClassName: local-path
+  capacity:
+    storage: 5Mi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: "/persist/service/openldap/config"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - nagoya
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: openldap-config
+  namespace: identity-system
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Mi
+  storageClassName: manual
+  volumeName: openldap-config
