@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mdns-forwarder
+spec:
+  selector:
+    matchLabels:
+      app: home-assistant
+  serviceName: "home-assistant"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: mdns-forwarder
+          image: toxuin/mdns-tunneller
+          ports:
+            - containerPort: 42069
+              protocol: TCP
+              name: mdnsf
+          #securityContext:
+          #  privileged: true
+          #  procMount: Default
+          #livenessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #  initialDelaySeconds: 10
+          #  timeoutSeconds: 5
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #  initialDelaySeconds: 5
+          #  timeoutSeconds: 5
+          env:
+          - name: DEBUG
+            value: "*"
+          - name: MDNS_INTERFACES
+            value: "[bond0]"

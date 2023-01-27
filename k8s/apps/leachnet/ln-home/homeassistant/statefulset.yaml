@@ -19,14 +19,14 @@ spec:
         command: ['sh', '-c', 'until nc -zv mosquitto.ln-database.svc 1883; do echo waiting for back-end; sleep 2; done;']
       containers:
         - name: ha
-          image: ghcr.io/home-assistant/home-assistant:2022.4
+          image: "ghcr.io/home-assistant/home-assistant:2023.1"
           resources:
             requests:
-              memory: "100Mi"
+              memory: "500Mi"
               cpu: "100m"
             limits:
-              memory: "500Mi"
-              cpu: "1"
+              memory: "1Gi"
+              cpu: "2"
           ports:
           - containerPort: 8123
             protocol: TCP

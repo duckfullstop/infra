@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+  name: ocpp-ingress
+  namespace: ln-home
+spec:
+  rules:
+  - host: cs.ocpp.net.theleachfamily.me.uk
+    http:
+      paths:
+      - backend:
+          service:
+            name: home-assistant-ocpp
+            port:
+              name: ocpp
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - cs.ocpp.net.theleachfamily.me.uk
+    secretName: ocpp-cs-cert
