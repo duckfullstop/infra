@@ -15,3 +15,7 @@ configMapGenerator:
   namespace: ln-home
   files:
   - config/configuration.yaml
+- name: custom-converter
+  namespace: ln-home
+  files:
+  - config/HIVELDSSIREN001.js

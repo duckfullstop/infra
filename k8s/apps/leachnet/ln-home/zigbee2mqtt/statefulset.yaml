@@ -19,7 +19,7 @@ spec:
         command: ['sh', '-c', 'until nc -zv mosquitto.ln-database.svc 1883; do echo waiting for mosquitto; sleep 2; done;']
       containers:
         - name: z2m
-          image: ghcr.io/koenkk/zigbee2mqtt:1.25.0
+          image: ghcr.io/koenkk/zigbee2mqtt:1.28.0
           imagePullPolicy: Always
           ports:
           - containerPort: 8080
@@ -47,6 +47,10 @@ spec:
             mountPath: /app/data/configuration.yaml
             readOnly: true
             subPath: configuration.yaml
+          - name: customconverter
+            mountPath: /app/data/HIVELDSSIREN001.js
+            readOnly: true
+            subPath: HIVELDSSIREN001.js
           - name: usb-zigbee
             mountPath: /dev/ttyUSB0
           - name: secrets
@@ -78,6 +82,9 @@ spec:
       - name: config
         configMap:
           name: zigbee2mqtt-config
+      - name: customconverter
+        configMap:
+          name: custom-converter
       - name: usb-zigbee
         hostPath:
           path: /dev/ttyUSB0

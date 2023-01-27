@@ -1,11 +1,13 @@
 advanced:
   last_seen: ISO_8601
-  log_level: info
+#  log_level: debug
   log_output:
     - console
   network_key: '!secret NETWORK_KEY'
   report: true
   rtscts: false
+external_converters:
+  - HIVELDSSIREN001.js
 availability:
   active:
     timeout: 5
