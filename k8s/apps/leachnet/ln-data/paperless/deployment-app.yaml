@@ -15,17 +15,17 @@ spec:
     spec:
       containers:
         - name: paperless
-          image: jonaswinkler/paperless-ng:latest
+          image: ghcr.io/paperless-ngx/paperless-ngx:latest
           ports:
           - containerPort: 8000
             protocol: TCP
             name: http
           resources:
             requests:
-              memory: "10Mi"
+              memory: "50Mi"
               cpu: "10m"
             limits:
-              memory: "200Mi"
+              memory: "500Mi"
               cpu: "1"
           env:
           - name: PAPERLESS_REDIS
@@ -42,6 +42,8 @@ spec:
               secretKeyRef:
                 name: paperless
                 key: postgresDbPassword
+          - name: PAPERLESS_PORT
+            value: "8000"
           - name: PAPERLESS_TIKA_ENABLED
             value: "1"
           - name: PAPERLESS_TIKA_GOTENBERG_ENDPOINT
@@ -78,22 +80,22 @@ spec:
             mountPath: /usr/src/paperless/export
           - name: consume
             mountPath: /usr/src/paperless/consume
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 30
-            timeoutSeconds: 10
-            failureThreshold: 5
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 30
-            timeoutSeconds: 10
-            failureThreshold: 5
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 30
+          #   timeoutSeconds: 10
+          #   failureThreshold: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 30
+          #   timeoutSeconds: 10
+          #   failureThreshold: 5
       volumes:
       - name: data
         persistentVolumeClaim:
