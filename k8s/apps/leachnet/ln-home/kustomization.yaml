@@ -3,6 +3,9 @@ kind: Kustomization
 namespace: ln-home
 resources:
 - ns.yaml
+- secret.yaml
 - esphome
 - homeassistant
+- homebridge
+- scrypted
 - zigbee2mqtt
