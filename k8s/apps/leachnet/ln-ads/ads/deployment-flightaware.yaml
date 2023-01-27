@@ -1,29 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: adsbexchange
+  name: flightaware
   namespace: ln-ads
 spec:
   selector:
     matchLabels:
-      app: adsbexchange
+      app: flightaware
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        app: adsbexchange
+        app: flightaware
     spec:
       containers:
-        - name: adsbexchange
-          image: ghcr.io/sdr-enthusiasts/docker-adsbexchange:latest
-          tty: true
+        - name: piaware
+          image: ghcr.io/sdr-enthusiasts/docker-piaware:latest
           ports:
-          - containerPort: 8754
+          - containerPort: 80
             protocol: TCP
             name: http
-          - containerPort: 30105
-            protocol: TCP
-            name: mlat
           resources:
             requests:
               memory: "50Mi"
@@ -38,11 +36,13 @@ spec:
             value: "30005"
           - name: TZ
             value: "Europe/London"
-          - name: UUID
+          - name: RECEIVER_TYPE
+            value: "relay"
+          - name: FEEDER_ID
             valueFrom:
               secretKeyRef:
                 name: ads-b
-                key: ADSBEXCHANGE_UUID
+                key: FLIGHTAWARE_FEEDER_ID
           - name: LAT
             valueFrom:
               secretKeyRef:
@@ -53,16 +53,6 @@ spec:
               secretKeyRef:
                 name: ads-b
                 key: SITE_LONGITUDE
-          - name: ALT
-            valueFrom:
-              secretKeyRef:
-                name: ads-b
-                key: SITE_LATITUDE
-          - name: SITENAME
-            valueFrom:
-              secretKeyRef:
-                name: ads-b
-                key: SITE_NAME
           livenessProbe:
             exec:
               command:
@@ -79,8 +69,14 @@ spec:
             failureThreshold: 30
             timeoutSeconds: 30
           volumeMounts:
-          - name: run
-            mountPath: /dev/bus/usb
+            - name: run
+              mountPath: /run
+            - name: varlog
+              mountPath: /var/log
       volumes:
-      - name: run
-        emptyDir: {}
+        - name: run
+          emptyDir:
+            medium: "Memory"
+            sizeLimit: 64M
+        - name: varlog
+          emptyDir: {}

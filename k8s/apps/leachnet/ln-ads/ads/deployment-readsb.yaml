@@ -8,6 +8,8 @@ spec:
     matchLabels:
       app: readsb
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -15,7 +17,7 @@ spec:
     spec:
       containers:
         - name: readsb
-          image: mikenye/readsb-protobuf:latest
+          image: ghcr.io/sdr-enthusiasts/docker-readsb-protobuf:latest
           tty: true
           ports:
           - containerPort: 8080
@@ -63,6 +65,8 @@ spec:
                 key: SITE_LONGITUDE
           - name: READSB_MODEAC
             value: "true"
+          - name: READSB_RTLSDR_DEVICE
+            value: "00001000"
           - name: READSB_RTLSDR_PPM
             value: "1"
           - name: READSB_RX_LOCATION_ACCURACY
@@ -76,12 +80,21 @@ spec:
             mountPath: /dev/bus/usb
           - name: readsb-autogain
             mountPath: /run/autogain
-          #livenessProbe:
-          #  exec:
-          #    command:
-          #      - /scripts/healthcheck.sh
-          #  initialDelaySeconds: 3600
-          #  periodSeconds: 60
+          livenessProbe:
+            exec:
+              command:
+                - /scripts/healthcheck.sh
+            periodSeconds: 60
+            failureThreshold: 3
+            timeoutSeconds: 30
+          startupProbe:
+            exec:
+              command:
+                - /scripts/healthcheck.sh
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 30
+            timeoutSeconds: 30
       volumes:
       - name: usb-ads-b
         hostPath:
