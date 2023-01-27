@@ -1,0 +1,34 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: jaeger
+  namespace: ducknet-devops
+spec:
+  interval: 1m0s
+  chart: 
+    spec:
+      chart: jaeger
+      sourceRef:
+        kind: HelmRepository
+        name: jaeger
+        namespace: flux-system
+  values:
+    provisionDataStore:
+      cassandra: false
+    allInOne:
+      enabled: true
+      resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 256m
+        memory: 128Mi
+    storage:
+      type: none
+    agent:
+      enabled: false
+    collector:
+      enabled: false
+    query:
+      enabled: false
