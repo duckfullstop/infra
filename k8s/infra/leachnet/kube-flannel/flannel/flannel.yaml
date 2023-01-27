@@ -22,6 +22,7 @@ rules:
   resources:
   - nodes
   verbs:
+  - get
   - list
   - watch
 - apiGroups:
@@ -85,7 +86,7 @@ data:
       "Network": "172.18.0.0/16",
       "IPv6Network": "fc00:abc1::/48",
       "Backend": {
-        "Type": "vxlan"
+        "Type": "host-gw"
       }
     }
 ---
@@ -136,8 +137,8 @@ spec:
         - name: cni-plugin
           mountPath: /opt/cni/bin
       - name: install-cni
-       #image: flannelcni/flannel:v0.20.0 for ppc64le and mips64le (dockerhub limitations may apply)
-        image: docker.io/rancher/mirrored-flannelcni-flannel:v0.20.0
+       #image: flannelcni/flannel:v0.20.2 for ppc64le and mips64le (dockerhub limitations may apply)
+        image: docker.io/rancher/mirrored-flannelcni-flannel:v0.20.2
         command:
         - cp
         args:
@@ -151,8 +152,8 @@ spec:
           mountPath: /etc/kube-flannel/
       containers:
       - name: kube-flannel
-       #image: flannelcni/flannel:v0.20.0 for ppc64le and mips64le (dockerhub limitations may apply)
-        image: docker.io/rancher/mirrored-flannelcni-flannel:v0.20.0
+       #image: flannelcni/flannel:v0.20.2 for ppc64le and mips64le (dockerhub limitations may apply)
+        image: docker.io/rancher/mirrored-flannelcni-flannel:v0.20.2
         command:
         - /opt/bin/flanneld
         args:
