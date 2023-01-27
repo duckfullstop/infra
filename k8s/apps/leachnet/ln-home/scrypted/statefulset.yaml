@@ -7,7 +7,7 @@ spec:
     matchLabels:
       app: scrypted
   serviceName: "scrypted"
-  replicas: 0
+  replicas: 1
   template:
     metadata:
       #annotations:
@@ -18,14 +18,14 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
-        - name: ha
-          image: koush/scrypted
+        - name: scrypted
+          image: ghcr.io/koush/scrypted:latest
           resources:
             requests:
-              memory: "100Mi"
+              memory: "1Gi"
               cpu: "100m"
             limits:
-              memory: "500Mi"
+              memory: "2Gi"
               cpu: "1"
           ports:
           - containerPort: 9443
