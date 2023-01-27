@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: plex-downloads-duck
+  name: plex-downloads-duck-torrents-complete
 spec:
   accessModes:
   - ReadWriteMany
@@ -9,7 +9,7 @@ spec:
     requests:
       storage: 1Ti
   storageClassName: "manual"
-  volumeName: "plex-downloads-duck"
+  volumeName: "ln-media-vault-downloads-duck-torrents-complete"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,7 +22,7 @@ spec:
     requests:
       storage: 1Ti
   storageClassName: "manual"
-  volumeName: "plex-media-pvr"
+  volumeName: "vault-media-pvr"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

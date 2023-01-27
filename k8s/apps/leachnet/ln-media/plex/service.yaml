@@ -9,3 +9,7 @@ spec:
     targetPort: http
   selector:
     app: plex
+  ipFamilyPolicy: SingleStack
+  ipFamilies:
+    # gdi Plex, doesn't support home families properly unless you do this
+    - "IPv4"

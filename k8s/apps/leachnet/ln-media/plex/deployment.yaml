@@ -59,8 +59,8 @@ spec:
             mountPath: /dev/dri
           - name: transcode
             mountPath: /transcode
-          - name: data-downloads-duck
-            mountPath: /data/downloads/duck
+          - name: data-downloads-duck-torrents-complete
+            mountPath: /data/downloads/duck/torrents/complete
           - name: data-media-pvr
             mountPath: /data/media/pvr
           # - name: data_video
@@ -75,9 +75,9 @@ spec:
           claimName: plex-config
       - name: transcode
         emptyDir:
-      - name: data-downloads-duck
+      - name: data-downloads-duck-torrents-complete
         persistentVolumeClaim:
-          claimName: plex-downloads-duck
+          claimName: plex-downloads-duck-torrents-complete
       - name: data-media-pvr
         persistentVolumeClaim:
           claimName: plex-media-pvr

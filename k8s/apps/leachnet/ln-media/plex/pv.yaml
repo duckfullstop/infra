@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: vault-downloads-duck
+  name: ln-media-vault-downloads-duck-torrents-complete
   labels:
     type: local
 spec:
@@ -11,7 +11,7 @@ spec:
   accessModes:
     - ReadWriteMany
   local:
-    path: "/mnt/vault/downloads/duck/transmission/data"
+    path: "/mnt/vault/downloads/duck/torrents/complete"
   nodeAffinity:
     required:
       nodeSelectorTerms:
