@@ -1,33 +1,33 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: rtorrent-rpc
+  name: qbittorrent-web
 spec:
   ports:
-  - name: xmlrpc
-    port: 9099
-    targetPort: xmlrpc
+  - name: web
+    port: 8080
+    targetPort: web
   selector:
-    app: rtorrent
+    app: qbittorrent
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rtorrent-utp
+  name: qbittorrent-utp
 spec:
   ports:
   - name: utptcp
-    port: 51401
-    nodePort: 51401
+    port: 6881
+    nodePort: 6881
     protocol: TCP
     targetPort: utptcp
   - name: utpudp
-    port: 51401
-    nodePort: 51401
+    port: 6881
+    nodePort: 6881
     protocol: UDP
     targetPort: utpudp
   selector:
-    app: rtorrent
+    app: qbittorrent
   ipFamilyPolicy: PreferDualStack
   ipFamilies:
    - IPv4

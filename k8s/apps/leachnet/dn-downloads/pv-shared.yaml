@@ -1,0 +1,147 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: dn-downloads-vault-downloads-duck-torrents
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 50Mi
+  accessModes:
+    - ReadWriteMany
+  local:
+    path: "/mnt/vault/downloads/duck/torrents"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - nagoya
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: dn-downloads-vault-downloads-duck-torrents-complete
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadWriteMany
+  local:
+    path: "/mnt/vault/downloads/duck/torrents/complete"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - nagoya
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: dn-downloads-vault-downloads-duck-torrents-complete-deduplicate
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteMany
+  local:
+    path: "/mnt/vault/downloads/duck/torrents/complete/deduplicate"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - nagoya
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: dn-downloads-vault-downloads-duck-torrents-downloading
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  local:
+    path: "/mnt/vault/downloads/duck/torrents/downloading"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - nagoya
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vault-downloads-duck-torrents
+  namespace: dn-downloads
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Mi
+  storageClassName: manual
+  volumeName: dn-downloads-vault-downloads-duck-torrents
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vault-downloads-duck-torrents-downloading
+  namespace: dn-downloads
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: manual
+  volumeName: dn-downloads-vault-downloads-duck-torrents-downloading
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vault-downloads-duck-torrents-complete
+  namespace: dn-downloads
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Ti
+  storageClassName: manual
+  volumeName: dn-downloads-vault-downloads-duck-torrents-complete
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vault-downloads-duck-torrents-complete-deduplicate
+  namespace: dn-downloads
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  storageClassName: manual
+  volumeName: dn-downloads-vault-downloads-duck-torrents-complete-deduplicate

@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: dn-downloads
 
 resources:
-- configmap.yaml
 - statefulset.yaml
 - service.yaml
 - pv.yaml

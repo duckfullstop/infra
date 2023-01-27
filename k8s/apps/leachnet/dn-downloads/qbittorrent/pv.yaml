@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: transmission-config
+  name: qbittorrent-config
   labels:
     type: local
 spec:
   storageClassName: manual
   capacity:
-    storage: 100Mi
+    storage: 10Mi
   accessModes:
     - ReadWriteOnce
   local:
-    path: "/persist/service/transmission"
+    path: "/persist/service/qbittorrent"
   nodeAffinity:
     required:
       nodeSelectorTerms:

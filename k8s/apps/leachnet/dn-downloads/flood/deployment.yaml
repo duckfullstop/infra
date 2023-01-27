@@ -14,7 +14,7 @@ spec:
         app: flood
     spec:
       containers:
-      - image: jesec/flood:latest
+      - image: jesec/flood:master-distroless
         name: flood
         resources:
             requests:
@@ -28,22 +28,59 @@ spec:
           value: "3001"
         - name: FLOOD_OPTION_auth
           value: "none"
-        - name: FLOOD_OPTION_rthost
-          value: "rtorrent-rpc.dn-downloads.svc.cluster.local"
-        - name: FLOOD_OPTION_rtport
-          value: "9091"
+        - name: FLOOD_OPTION_qburl
+          value: "http://qbittorrent-web.dn-downloads.svc.cluster.local:8080"
+        - name: FLOOD_OPTION_qbuser
+          valueFrom:
+            secretKeyRef:
+              name: flood
+              key: qb_username
+              optional: false
+        - name: FLOOD_OPTION_qbpass
+          valueFrom:
+            secretKeyRef:
+              name: flood
+              key: qb_password
+              optional: false
         ports:
         - containerPort: 3001
           name: http
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        startupProbe:
+          httpGet:
+            path: /
+            port: http
+          failureThreshold: 12
+          periodSeconds: 10
         volumeMounts:
         - name: data
-          mountPath: /data
+          mountPath: /downloads
+        - name: data-downloading
+          mountPath: /downloads/downloading
+        - name: data-complete
+          mountPath: /downloads/complete
+        - name: data-complete-deduplicate
+          mountPath: /downloads/complete/deduplicate
         - name: config
           mountPath: /config
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: data-rtorrent-0
+          claimName: vault-downloads-duck-torrents
+      - name: data-downloading
+        persistentVolumeClaim:
+          claimName: vault-downloads-duck-torrents-downloading
+      - name: data-complete
+        persistentVolumeClaim:
+          claimName: vault-downloads-duck-torrents-complete
+      - name: data-complete-deduplicate
+        persistentVolumeClaim:
+          claimName: vault-downloads-duck-torrents-complete-deduplicate
       - name: config
         persistentVolumeClaim:
           claimName: flood-config
