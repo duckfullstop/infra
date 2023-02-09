@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: irc-edefnet
+spec:
+  entryPoints:
+    - ircs
+  routes:
+  - match: HostSNI(`edef.bouncer.irc.duck.moe`)
+    services:
+    - name: pounce-edefnet
+      port: 6697
+  tls:
+    domains:
+    - main: "edef.bouncer.irc.duck.moe"
+    secretName: irc-edefnet-cert
+    passthrough: true

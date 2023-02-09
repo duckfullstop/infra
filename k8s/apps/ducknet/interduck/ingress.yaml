@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+  name: interduck
+spec:
+  rules:
+  - host: duck.moe
+    http: &http_rules
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: interduck
+            port:
+              name: http
+  - host: duck.me.uk
+    http: *http_rules
+  - host: by.duck.me.uk
+    http: *http_rules
+  - host: luaduck.co.uk
+    http: *http_rules
+  tls:
+  - hosts:
+    - duck.moe
+    - duck.me.uk
+    - by.duck.me.uk
+    - luaduck.co.uk
+    secretName: interduck-cert

@@ -1,4 +1,0 @@
-namespace: metallb-system
-
-resources:
-  - helmrelease.yaml

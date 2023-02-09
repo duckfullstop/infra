@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: irc-libera-cert
+  namespace: ducknet
+spec:
+  dnsNames:
+    - libera.bouncer.irc.duck.moe
+  secretName: irc-libera-cert
+  issuerRef:
+    name: letsencrypt-http-prod
+    kind: ClusterIssuer

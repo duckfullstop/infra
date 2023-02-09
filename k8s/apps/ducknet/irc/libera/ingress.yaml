@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: irc-libera
+spec:
+  entryPoints:
+    - ircs
+  routes:
+  - match: HostSNI(`libera.bouncer.irc.duck.moe`)
+    services:
+    - name: pounce-libera
+      port: 6697
+  tls:
+    domains:
+    - main: "libera.bouncer.irc.duck.moe"
+    secretName: irc-libera-cert
+    passthrough: true

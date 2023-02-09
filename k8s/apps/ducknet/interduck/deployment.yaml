@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: interduck
+  labels:
+    app: interduck
+spec:
+  selector:
+    matchLabels:
+      app: interduck
+  template:
+    metadata:
+      labels:
+        app: interduck
+    spec:
+      containers:
+      - image: ghcr.io/duckfullstop/interduck:main
+        imagePullPolicy: "Always"
+        name: web
+        resources:
+          requests:
+            memory: "40Mi"
+            cpu: "25m"
+          limits:
+            memory: "75Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 80
+          name: http

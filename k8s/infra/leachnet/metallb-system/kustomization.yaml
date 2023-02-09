@@ -1,6 +1,0 @@
-namespace: metallb-system
-
-resources:
-  - ns.yaml
-  - metallb
-  - config

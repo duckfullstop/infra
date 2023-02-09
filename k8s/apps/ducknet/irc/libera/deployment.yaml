@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pounce-libera
+spec:
+  selector:
+    matchLabels:
+      app: pounce-libera
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pounce-libera
+    spec:
+      containers:
+        - name: pounce
+          image: ghcr.io/duckfullstop/cri-pounce:latest
+          command: ['pounce', '-v', '/config/pounce.conf']
+          resources:
+            requests:
+              memory: "20Mi"
+              cpu: "25m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          volumeMounts:
+          - name: config
+            mountPath: /config
+          - name: certs
+            mountPath: /config/certs
+            readOnly: true
+          - name: cli-cert
+            mountPath: /config/certs-cli
+            readOnly: true
+          ports:
+          - containerPort: 6697
+            protocol: TCP
+            name: irc-ssl
+          livenessProbe:
+            tcpSocket:
+              port: irc-ssl
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            tcpSocket:
+              port: irc-ssl
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: pounce-libera
+        - name: certs
+          secret:
+            secretName: irc-libera-cert
+        - name: cli-cert
+          secret:
+            secretName: irc-libera-cli-cert
