@@ -5,12 +5,12 @@ resources:
 - certificate.yaml
 - deployment.yaml
 - service.yaml
-- secret-plain.yaml
+- secret.yaml
 - ingress.yaml
 
 namespace: ducknet
 
-# TODO NOCOMMIT SECRETS IN CONFIGURATION FILE (incl SASL)
+# TODO NOCOMMIT SECRETS IN CONFIGURATION FILE (incl SASL)
 configMapGenerator:
 - name: pounce-libera
   namespace: ducknet

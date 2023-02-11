@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: irc-client-svc-palaver
+  namespace: ducknet
+spec:
+  secretName: irc-client-svc-palaver
+  duration: 43800h # 5 years
+  commonName: palaver.irc.duck.moe
+  isCA: false
+  usages:
+    - digital signature
+    - key encipherment
+    - client auth
+  issuerRef:
+    name: irc-client-issuer
+    kind: Issuer
+    group: cert-manager.io

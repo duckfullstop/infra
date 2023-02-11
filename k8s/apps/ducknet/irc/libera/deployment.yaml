@@ -12,6 +12,17 @@ spec:
       labels:
         app: pounce-libera
     spec:
+      initContainers:
+        - name: config-gen
+          image: busybox:1.28
+          command: ['sh', '-c', "awk '{print $0}' /tmpl/pounce.conf /secret/pounce.conf > /config/pounce.conf"]
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: config-configmap
+              mountPath: /tmpl
+            - name: config-secret
+              mountPath: /secret
       containers:
         - name: pounce
           image: ghcr.io/duckfullstop/cri-pounce:latest
@@ -28,6 +39,9 @@ spec:
             mountPath: /config
           - name: certs
             mountPath: /config/certs
+            readOnly: true
+          - name: client-auth-certs
+            mountPath: /config/certs/ca
             readOnly: true
           - name: cli-cert
             mountPath: /config/certs-cli
@@ -46,10 +60,46 @@ spec:
               port: irc-ssl
             initialDelaySeconds: 5
             timeoutSeconds: 5
+        - name: palaver
+          image: ghcr.io/duckfullstop/cri-pounce:latest
+          command: 
+            - 'pounce-palaver'
+            - '-t' # Force trust (looks a bit weird, but we're basically trusting the LE root certificate implicitly)
+            - '/etc/ssl/certs/ca-certificates.crt'
+            - '-c' # Auth with this certificate
+            - '/config/certs/cli/tls.crt'
+            - '-k' # Auth with this private key
+            - '/config/certs/cli/tls.key'
+            - '-d' # Database file
+            - '/tmp/palaver.db'
+            - '127.0.0.1'
+          resources: 
+            requests:
+              memory: "20Mi"
+              cpu: "25m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          volumeMounts:
+          - name: client-auth-certs
+            mountPath: /config/certs/cli
+            readOnly: true
       volumes:
         - name: config
+          emptyDir:
+            sizeLimit: 5Mi
+        - name: config-configmap
           configMap:
             name: pounce-libera
+        - name: config-secret
+          secret:
+            secretName: pounce-libera
+        - name: client-auth-certs
+          secret:
+            secretName: irc-client-ca
+        - name: client-svc-palaver-cert
+          secret:
+            secretName: irc-client-svc-palaver
         - name: certs
           secret:
             secretName: irc-libera-cert

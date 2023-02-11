@@ -4,13 +4,12 @@ kind: Kustomization
 resources:
 - certificate.yaml
 - deployment.yaml
-- secret-plain.yaml
+- secret.yaml
 - service.yaml
 - ingress.yaml
 
 namespace: ducknet
 
-# TODO NOCOMMIT secrets in config
 configMapGenerator:
 - name: pounce-edefnet
   namespace: ducknet

@@ -1,0 +1,25 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: irc-client-ca
+  namespace: ducknet
+spec:
+  isCA: true
+  commonName: irc.duck.moe
+  secretName: irc-client-ca
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: irc-client-issuer
+  namespace: ducknet
+spec:
+  ca:
+    secretName: irc-client-ca

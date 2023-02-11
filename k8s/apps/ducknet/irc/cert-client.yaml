@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: irc-client-duck
+  namespace: ducknet
+spec:
+  secretName: irc-client-duck
+  duration: 43800h # 5 years
+  subject:
+    organizationalUnits:
+      - duck.
+  commonName: duck.
+  isCA: false
+  usages:
+    - digital signature
+    - key encipherment
+    - client auth
+  issuerRef:
+    name: irc-client-issuer
+    kind: Issuer
+    group: cert-manager.io
