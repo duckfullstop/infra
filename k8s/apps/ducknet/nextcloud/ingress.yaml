@@ -8,7 +8,7 @@ spec:
     regex: "https://(.*)/.well-known/(card|cal)dav"
     replacement: "https://${1}/remote.php/dav/"
 ---
-apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
@@ -22,9 +22,12 @@ spec:
     http: &http_rules
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: nextcloud
-          servicePort: http
+          service:
+            name: nextcloud
+            port:
+              name: http
   - host: files.duck.me.uk
     http: *http_rules
   tls:

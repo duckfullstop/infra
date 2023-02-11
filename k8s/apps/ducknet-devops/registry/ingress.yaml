@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
@@ -10,9 +10,12 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: docker-registry
-          servicePort: 5000
+          service:
+            name: docker-registry
+            port:
+              name: http
   tls:
   - hosts:
     - registry.dev.duck.moe
