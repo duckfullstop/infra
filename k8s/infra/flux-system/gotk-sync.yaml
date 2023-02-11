@@ -14,7 +14,7 @@ spec:
   ignore: |
     # exclude all
     /*
-    # except the k8s manifests
+    # except the k8s manifests
     !/k8s
     # although there are a few other things we don't need
     /k8s/**/*.txt
