@@ -4,4 +4,3 @@ namespace: identity-system
 resources:
 - ns.yaml
 - authentik
-- ldap
