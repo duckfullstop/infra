@@ -12,6 +12,10 @@ spec:
         kind: HelmRepository
         name: traefik-charts
         namespace: flux-system
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
   values:
     deployment:
       enabled: true
