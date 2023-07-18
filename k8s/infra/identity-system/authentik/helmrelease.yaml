@@ -40,7 +40,7 @@ spec:
       optional: false
   values:
     image:
-      tag: "2023.4"
+      tag: "2023.6"
     authentik:
       error_reporting:
         enabled: true
