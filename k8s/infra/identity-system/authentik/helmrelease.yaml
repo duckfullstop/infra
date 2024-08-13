@@ -14,27 +14,12 @@ spec:
         namespace: flux-system
   valuesFrom:
     - kind: Secret
-      name: authentik
+      name: authentik-config
       valuesKey: secretKey
       targetPath: authentik.secret_key
       optional: false
     - kind: Secret
-      name: authentik
-      valuesKey: postgresDbName
-      targetPath: authentik.postgresql.name
-      optional: false
-    - kind: Secret
-      name: authentik
-      valuesKey: postgresDbUser
-      targetPath: authentik.postgresql.user
-      optional: false
-    - kind: Secret
-      name: authentik
-      valuesKey: postgresDbPassword
-      targetPath: authentik.postgresql.password
-      optional: false
-    - kind: Secret
-      name: authentik
+      name: authentik-config
       valuesKey: redisPassword
       targetPath: authentik.redis.password
       optional: false
@@ -44,11 +29,22 @@ spec:
         enabled: true
       postgresql:
         host: "postgresql.database.svc.cluster.local"
+        user: file:///authentik-secrets/postgresDbUser
+        password: file:///authentik-secrets/postgresDbPassword
+        name: file:///authentik-secrets/postgresDbName
       redis:
         host: "redis-master.database.svc.cluster.local"
     global:
       image:
         tag: "2023.8"
+      volumes:
+        - name: authentik-config
+          secret:
+            secretName: authentik-config
+      volumeMounts:
+        - name: authentik-config
+          mountPath: /authentik-secrets
+          readOnly: true
     server:
       ingress:
         enabled: true
@@ -62,10 +58,11 @@ spec:
               - auth.duck.moe
               - auth.theleachfamily.me.uk
             secretName: "authentik-cert"
-    volumeMounts:
-      - name: media
-        mountPath: /media
-    volumes:
-      - name: media
-        persistentVolumeClaim:
-          claimName: authentik-media
+      volumeMounts:
+        - name: media
+          mountPath: /media
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: authentik-media
+        
