@@ -36,15 +36,20 @@ spec:
         host: "redis-master.database.svc.cluster.local"
     global:
       image:
-        tag: "2023.8"
+        tag: "2024.6"
       volumes:
         - name: authentik-config
           secret:
             secretName: authentik-config
+        - name: media
+          persistentVolumeClaim:
+            claimName: authentik-media
       volumeMounts:
         - name: authentik-config
           mountPath: /authentik-secrets
           readOnly: true
+        - name: media
+          mountPath: /media
     server:
       ingress:
         enabled: true
@@ -58,11 +63,5 @@ spec:
               - auth.duck.moe
               - auth.theleachfamily.me.uk
             secretName: "authentik-cert"
-      volumeMounts:
-        - name: media
-          mountPath: /media
-      volumes:
-        - name: media
-          persistentVolumeClaim:
-            claimName: authentik-media
+      
         
