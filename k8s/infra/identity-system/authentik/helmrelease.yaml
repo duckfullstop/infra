@@ -39,8 +39,6 @@ spec:
       targetPath: authentik.redis.password
       optional: false
   values:
-    image:
-      tag: "2023.6"
     authentik:
       error_reporting:
         enabled: true
@@ -48,24 +46,22 @@ spec:
         host: "postgresql.database.svc.cluster.local"
       redis:
         host: "redis-master.database.svc.cluster.local"
-    ingress:
-      enabled: true
-      annotations:
-        cert-manager.io/cluster-issuer: "letsencrypt-http-prod"
-      hosts:
-        - host: auth.duck.moe
-          paths:
-            - path: "/"
-              pathType: Prefix
-        - host: auth.theleachfamily.me.uk
-          paths:
-            - path: "/"
-              pathType: Prefix
-      tls:
-        - hosts:
-            - auth.duck.moe
-            - auth.theleachfamily.me.uk
-          secretName: "authentik-cert"
+    global:
+      image:
+        tag: "2023.8"
+    server:
+      ingress:
+        enabled: true
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-http-prod"
+        hosts:
+          - auth.duck.moe
+          - auth.theleachfamily.me.uk
+        tls:
+          - hosts:
+              - auth.duck.moe
+              - auth.theleachfamily.me.uk
+            secretName: "authentik-cert"
     volumeMounts:
       - name: media
         mountPath: /media
