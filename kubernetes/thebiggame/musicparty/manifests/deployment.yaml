@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: musicparty
+  labels:
+    app: musicparty
+spec:
+  selector:
+    matchLabels:
+      app: musicparty
+  template:
+    metadata:
+      labels:
+        app: musicparty
+    spec:
+      containers:
+      - image: ghcr.io/mintopia/musicparty:develop
+        name: musicparty
+        envFrom:
+          - secretRef:
+              name: musicparty
+          - configMapRef:
+              name: musicparty
+        volumeMounts:
+        - name: public
+          mountPath: /app/storage/public
+        - name: logs
+          mountPath: /app/storage/logs
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+        #resources:
+        #  requests:
+        #    memory: "40Mi"
+        #    cpu: "50m"
+        #  limits:
+        #    memory: "75Mi"
+        #    cpu: "100m"
+      - image: ghcr.io/mintopia/musicparty:develop
+        name: horizon
+        command: ["php", "artisan", "horizon"]
+        envFrom:
+          - secretRef:
+              name: musicparty
+          - configMapRef:
+              name: musicparty
+        volumeMounts:
+        - name: public
+          mountPath: /app/storage/public
+        - name: logs
+          mountPath: /app/storage/logs
+      - image: ghcr.io/mintopia/musicparty:develop
+        name: scheduler
+        command: ["php", "artisan", "schedule:work"]
+        envFrom:
+          - secretRef:
+              name: musicparty
+          - configMapRef:
+              name: musicparty
+        volumeMounts:
+        - name: public
+          mountPath: /app/storage/public
+        - name: logs
+          mountPath: /app/storage/logs
+      - image: ghcr.io/mintopia/musicparty:develop
+        name: reverb
+        command: ["php", "artisan", "reverb:start", "--host=::", "--debug", "--port=80"]
+        envFrom:
+          - secretRef:
+              name: musicparty
+          - configMapRef:
+              name: musicparty
+        volumeMounts:
+        - name: public
+          mountPath: /app/storage/public
+        - name: logs
+          mountPath: /app/storage/logs
+      - image: ghcr.io/mintopia/musicparty-notify:latest
+        name: notify
+        env:
+          - name: MUSICPARTY_ENDPOINT
+            value: "http://musicparty.thebiggame.svc.cluster.local/webhooks/parties/tbg53/simple"
+          - name: MUSICPARTY_PROXY_URL
+            value: "http://musicparty.thebiggame.svc.cluster.local/proxy"
+          - name: MUSICPARTY_AUTHTOKEN
+            valueFrom:
+              secretKeyRef:
+                name: musicparty
+                value: NOTIFY_AUTHTOKEN
+        volumeMounts:
+        - name: public
+          mountPath: /app/storage/public
+        - name: logs
+          mountPath: /app/storage/logs
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: musicparty-data
+      - name: logs
+        emptyDir:

@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pocketid-ducknet
+  namespace: identity
+spec:
+  project: identity
+  sources:
+    - repoURL: 'oci://ghcr.io/hobbit44/pocket-id-helm/pocket-id'
+      path: .
+      targetRevision: "1.16.*"
+      helm:
+        valuesObject:
+          config:
+            publicAppUrl: "https://id.duck.moe"
+            appUrl: "https://id.duck.moe"
+            dbProvider: "postgres"
+            dbConnectionStringFile: "/secrets/dbConnectionString"
+            keysStorage: "database"
+            encryptionKeyFile: "/secrets/encryptionKey"
+            uploadPath: "/app/backend/data/uploads"
+            geoliteDbPath: "/app/backend/data/GeoLite2City.mmdb"
+
+            appName: "identiduck."
+            # allowUserSignups: "withToken"
+            host: "'::'"
+          image:
+            tag: "v2.0-distroless"
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt-prod"
+            hosts:
+              - host: id.duck.moe
+                paths:
+                  - path: "/"
+                    pathType: "Prefix"
+              # - host: id.theleachfamily.me.uk
+            tls:
+              - hosts:
+                  - id.duck.moe
+                  # - id.theleachfamily.me.uk
+                secretName: "id-cert"
+          livenessProbe:
+            httpGet:
+              path: "/healthz"
+          persistence:
+            enabled: true
+            size: 10Gi
+            storageClass: hcloud-volumes
+          podSecurityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+          readinessProbe:
+            httpGet:
+              path: "/healthz"
+          service:
+            port: 1411
+          volumes:
+            - name: secrets
+              secret:
+                secretName: pocketid
+                optional: false
+
+          volumeMounts:
+            - name: secrets
+              mountPath: "/secrets"
+              readOnly: true
+    # - repoURL: 'https://github.com/duckfullstop/infra'
+    #   path: k8s/identity/pocketid/manifests
+    #   targetRevision: main
+  destination:
+    namespace: identity
+    name: ducknet

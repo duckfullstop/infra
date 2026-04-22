@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: bigbot
+spec:
+  rules:
+  - host: bot.tbg.duck.moe
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: bigbot
+            port:
+              name: http
+  tls:
+  - hosts:
+    - bot.tbg.duck.moe
+    secretName: bot-tbg-cert

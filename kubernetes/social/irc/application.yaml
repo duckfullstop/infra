@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: irc-pounce
+  namespace: social
+spec:
+  project: social
+  sources:
+    - repoURL: 'https://github.com/duckfullstop/infra/'
+      path: kubernetes/social/irc/edefnet
+      targetRevision: main
+    - repoURL: 'https://github.com/duckfullstop/infra/'
+      path: kubernetes/social/irc/libera
+      targetRevision: main
+  destination:
+    namespace: social
+    name: ducknet

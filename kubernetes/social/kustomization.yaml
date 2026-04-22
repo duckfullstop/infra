@@ -1,0 +1,6 @@
+resources:
+  - namespace.yaml
+  - project.yaml
+  - synapse
+  - irc
+  - bluesky

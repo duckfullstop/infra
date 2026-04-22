@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-cd
+  namespace: argo-cd
+spec:
+  project: infra-core
+  sources:
+    - repoURL: 'https://argoproj.github.io/argo-helm'
+      targetRevision: 8.3.*
+      chart: argo-cd
+      helm:
+        valuesObject:
+          configs:
+            cm:
+              create: true
+              dex.config: |
+                connectors:
+                - config:
+                    issuer: https://id.duck.moe/
+                    clientID: 1314b8e3-fad0-4803-8195-65650aa0664c
+                    clientSecret: $argocd-oidc:oidc.identiduck.clientSecret
+                    insecureEnableGroups: true
+                    scopes:
+                      - openid
+                      - profile
+                      - email
+                  name: identiduck.
+                  type: oidc
+                  id: ducknet
+              url: 'https://cd.argo.k8s.net.duck.moe'
+            params:
+              # potentially spicy (don't do this in multi-user repositories!)
+              application.namespaces: "*"
+              application.resourceTrackingMethod: annotation
+              server.insecure: "true"
+              controller.diff.server.side: "true"
+            rbac:
+              policy.csv: |
+                g, ducknet_ops, role:admin
+            secret:
+              createSecret: true
+          server:
+            certificate:
+              enabled: false
+              secretName: argo-cd-server-tls
+              domain: cd.argo.k8s.net.duck.moe
+              issuer:
+                group: "cert-manager.io"
+                kind: "ClusterIssuer"
+                name: "letsencrypt-prod"
+          createClusterRoles: true
+          ingress:
+            enabled: false
+            annotations:
+              traefik.ingress.kubernetes.io/router.entrypoints: websecure
+            ingressClassName: traefik
+            hosts:
+              - cd.argo.k8s.net.duck.moe
+            extraTls:
+              - hosts:
+                  - cd.argo.k8s.net.duck.moe
+                secretName: argo-cd-server-tls
+            # -- Uses `server.service.servicePortHttps` instead of `server.service.servicePortHttp`
+            https: false
+
+    # - repoURL: 'https://github.com/duckfullstop/infra-ln/'
+    #   path: k8s/applications/infrastructure/argocd/manifests
+    #   targetRevision: main
+  destination:
+    namespace: argo-cd
+    name: ducknet
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

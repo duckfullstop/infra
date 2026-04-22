@@ -1,0 +1,6 @@
+namespace: vpn
+
+resources:
+- deployment.yaml
+- secret.yaml
+- service.yaml

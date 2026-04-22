@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: identity
+  namespace: argo-cd
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  description: Elements providing resources to do with identity, such as authentik.
+  destinations:
+  - name: ducknet
+    namespace: '*'
+    server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  sourceNamespaces:
+  - 'identity'
+  sourceRepos:
+  - '*'

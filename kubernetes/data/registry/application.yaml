@@ -1,0 +1,77 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: registry
+  namespace: data
+spec:
+  project: data
+  sources:
+    - repoURL: 'https://zotregistry.dev/helm-charts/'
+      chart: zot
+      targetRevision: "0.1.65"
+      helm:
+        valuesObject:
+          image:
+            repository: ghcr.io/project-zot/zot-linux-arm64
+          service:
+            type: ClusterIP
+          mountConfig: true
+          externalSecrets:
+            - secretName: zot
+              mountPath: "/secret/k8s"
+          configFiles:
+             config.json: |-
+              {
+                "storage": { "rootDirectory": "/var/lib/registry" },
+                "http": {
+                  "address": "[::]",
+                  "port": "5000",
+                  "auth": { "htpasswd": { "path": "/secret/k8s/HTPASSWD" } },
+                  "accessControl": {
+                    "repositories": {
+                      "**": {
+                        "policies": [{
+                          "users": ["user"],
+                          "actions": ["read"]
+                        }],
+                        "defaultPolicy": ["read"],
+                        "anonymousPolicy": ["read"]
+                      }
+                    },
+                    "adminPolicy": {
+                      "users": ["admin"],
+                      "actions": ["read", "create", "update", "delete"]
+                    }
+                  }
+                },
+                "log": { "level": "debug" }
+              }
+          persistence: true
+          pvc:
+            create: true
+            storageClassName: "hcloud-volumes"
+            storage: "10Gi"
+          startupProbe:
+            # sometimes needs just a liiiitle bit longer
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 5
+          ingress:
+            enabled: true
+            className: "traefik"
+            annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt-prod"
+            hosts:
+              - host: registry.net.duck.moe
+                paths:
+                  - path: /
+            tls:
+              - hosts:
+                  - registry.net.duck.moe
+                secretName: "registry-cert"
+    # - repoURL: 'https://github.com/duckfullstop/infra'
+    #   path: kubernetes/data/harbor/manifests
+    #   targetRevision: main
+  destination:
+    namespace: data
+    name: ducknet

@@ -1,0 +1,91 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: matrix-synapse
+  namespace: social
+spec:
+  project: social
+  sources:
+    - repoURL: https://ananace.gitlab.io/charts
+      chart: matrix-synapse
+      targetRevision: 3.11.0
+      helm:
+        valuesObject:
+          argoCD: true
+          serverName: duck.moe
+          publicServerName: matrix.duck.moe
+          signingkey:
+            job:
+              enabled: false
+            existingSecret: matrix-synapse-ext
+          synapse:
+            extraVolumes:
+              - name: oidc
+                secret:
+                  secretName: matrix-synapse-ext
+            extraVolumeMounts:
+              - name: oidc
+                mountPath: /synapse/config/conf.d/oidc.yaml
+                subPath: oidcProvider.yaml
+            resources:
+              limits:
+                cpu: 1000m
+                memory: 512Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+          workers:
+            resources:
+              limits:
+                cpu: 150m
+                memory: 128Mi
+              requests:
+                cpu: 50m
+                memory: 64Mi
+          wellknown:
+            enabled: true
+            useIpv6: true
+            resources:
+              limits:
+                cpu: 5m
+                memory: 15Mi
+              requests:
+                cpu: 5m
+                memory: 15Mi
+          extraConfig:
+            suppress_key_server_warning: true
+            password_config:
+              enabled: false
+          
+          postgresql:
+            enabled: false
+          externalPostgresql:
+            host: "postgresql.database.svc.cluster.local"
+            username: "synapse"
+            existingSecret: "matrix-synapse-ext"
+            existingSecretPasswordKey: "postgresDbPassword"
+            database: "matrix"
+          redis:
+            # only used for synchronisation so we don't otherwise care about it
+            enabled: true
+            host: "matrix-synapse-redis-master.social.svc.cluster.local"
+          externalRedis:
+            host: "matrix-synapse-redis-master.social.svc.cluster.local"
+          persistence:
+            enabled: true
+            storageClass: "hcloud-volumes"
+            size: "10Gi"
+          ingress:
+            enabled: true
+            tls:
+              - hosts:
+                  - matrix.duck.moe
+                secretName: "matrix-cert"
+            annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # - repoURL: 'https://github.com/duckfullstop/infra-ln/'
+    #   path: k8s/applications/infrastructure/traefik/manifests
+    #   targetRevision: main
+  destination:
+    namespace: social
+    name: ducknet

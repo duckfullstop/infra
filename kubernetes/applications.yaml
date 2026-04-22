@@ -1,0 +1,127 @@
+# This special Application object synchronises all Applications.
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: infra-core
+  namespace: argo-cd
+spec:
+  destination:
+    namespace: argocd
+    name: ducknet
+  project: root
+  source:
+    repoURL: 'https://github.com/duckfullstop/infra/'
+    path: kubernetes/infra-core
+    targetRevision: main
+  syncPolicy:
+    automated:
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: infra
+  namespace: argo-cd
+spec:
+  destination:
+    namespace: argocd
+    name: ducknet
+  project: root
+  source:
+    repoURL: 'https://github.com/duckfullstop/infra/'
+    path: kubernetes/infra
+    targetRevision: main
+  syncPolicy:
+    automated:
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: identity
+  namespace: argo-cd
+spec:
+  destination:
+    namespace: argocd
+    name: ducknet
+  project: root
+  source:
+    repoURL: 'https://github.com/duckfullstop/infra/'
+    path: kubernetes/identity
+    targetRevision: main
+  syncPolicy:
+    automated:
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: social
+  namespace: argo-cd
+spec:
+  destination:
+    namespace: argocd
+    name: ducknet
+  project: root
+  source:
+    repoURL: 'https://github.com/duckfullstop/infra/'
+    path: kubernetes/social
+    targetRevision: main
+  syncPolicy:
+    automated:
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: web
+  namespace: argo-cd
+spec:
+  destination:
+    namespace: argocd
+    name: ducknet
+  project: root
+  source:
+    repoURL: 'https://github.com/duckfullstop/infra/'
+    path: kubernetes/web
+    targetRevision: main
+  syncPolicy:
+    automated:
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: data
+  namespace: argo-cd
+spec:
+  destination:
+    namespace: argocd
+    name: ducknet
+  project: root
+  source:
+    repoURL: 'https://github.com/duckfullstop/infra/'
+    path: kubernetes/data
+    targetRevision: main
+  syncPolicy:
+    automated:
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: thebiggame
+  namespace: argo-cd
+spec:
+  destination:
+    namespace: argocd
+    name: ducknet
+  project: root
+  source:
+    repoURL: 'https://github.com/duckfullstop/infra/'
+    path: kubernetes/thebiggame
+    targetRevision: main
+  syncPolicy:
+    automated:
+      selfHeal: true

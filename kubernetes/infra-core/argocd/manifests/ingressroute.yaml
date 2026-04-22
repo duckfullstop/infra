@@ -1,0 +1,26 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: argocd-server
+  namespace: argo-cd
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`cd.argo.k8s.net.duck.moe`)
+      priority: 10
+      services:
+        - name: argo-cd-argocd-server
+          port: 80
+    - kind: Rule
+      match: Host(`cd.argo.k8s.net.duck.moe`) && Header(`Content-Type`, `application/grpc`)
+      priority: 11
+      services:
+        - name: argo-cd-argocd-server
+          port: 80
+          scheme: h2c
+  tls:
+    domains:
+      - main: "cd.argo.k8s.net.duck.moe"
+    secretName: argocd-cert

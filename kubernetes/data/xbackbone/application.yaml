@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: xbackbone
+  namespace: data
+spec:
+  project: data
+  sources:
+    - repoURL: 'https://github.com/duckfullstop/infra/'
+      path: kubernetes/data/xbackbone
+      targetRevision: main
+  destination:
+    namespace: data
+    name: ducknet

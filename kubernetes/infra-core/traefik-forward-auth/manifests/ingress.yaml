@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http-prod
+    traefik.ingress.kubernetes.io/router.middlewares: kube-system-traefik-forward-auth@kubernetescrd
+  name: forward-auth
+spec:
+  rules:
+  - host: auth.net.duck.moe
+    http: 
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: traefik-forward-auth
+            port:
+              name: http
+  tls:
+  - hosts:
+    - auth.net.duck.moe
+    secretName: forward-auth-cert

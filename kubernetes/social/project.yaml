@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: social
+  namespace: argo-cd
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  description: Elements providing resources to do with social networking, such as chat services or social media platforms.
+  destinations:
+  - name: ducknet
+    namespace: '*'
+    server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  sourceNamespaces:
+  - 'social'
+  sourceRepos:
+  - '*'

@@ -1,6 +1,0 @@
-apiVersion: "v1"
-kind: Namespace
-metadata:
-  name: dn-social
-  labels:
-    name: dn-social

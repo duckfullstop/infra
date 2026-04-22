@@ -1,0 +1,7 @@
+resources:
+  - namespaces.yaml
+  - project.yaml
+  - cert-manager
+  - mariadb
+  - postgres
+  - postgres-operator

@@ -1,0 +1,3 @@
+resources:
+  - project.yaml
+  - applications.yaml

@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgres-operator
+  namespace: cnpg-system
+spec:
+  destination:
+    namespace: cnpg-system
+    name: ducknet
+  project: infra
+  sources:
+    - repoURL: 'https://cloudnative-pg.github.io/charts'
+      chart: cloudnative-pg
+      targetRevision: "0.28.*"
+      helm:
+        valuesObject:
+          namespaceOverride: cnpg-system
+  syncPolicy:
+    syncOptions:
+      - ServerSideApply=true

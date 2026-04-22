@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: yabin-ingress
+spec:
+  rules:
+  - host: paste.duck.moe
+    http: &http_rules
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: yabin
+            port:
+              name: http
+  - host: paste.duck.me.uk
+    http: *http_rules
+  tls:
+  - hosts:
+    - paste.duck.moe
+    - paste.duck.me.uk
+    secretName: yabin-cert

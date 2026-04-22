@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bluesky-pds
+  namespace: social
+spec:
+  project: social
+  sources:
+    - repoURL: https://charts.nerkho.ch
+      chart: bluesky-pds
+      targetRevision: 0.2.1
+      helm:
+        valuesObject:
+          pds:
+            config:
+              hostname: bluesky.duck.moe
+              secrets:
+                existingSecret: bluesky-pds
+              pdsEmailFromAddress: "bluesky@net.duck.moe"
+            dataStorage:
+              storageClass: hcloud-volumes
+          ingress:
+            enabled: true
+            hosts:
+              - host: bluesky.duck.moe
+                paths:
+                  - path: /
+                    pathType: Prefix
+            tls:
+              - hosts:
+                  - bluesky.duck.moe
+                secretName: "bluesky-cert"
+            annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # - repoURL: 'https://github.com/duckfullstop/infra/'
+    #   path: kubernetes/social/bluesky/manifests
+    #   targetRevision: main
+  destination:
+    namespace: social
+    name: ducknet

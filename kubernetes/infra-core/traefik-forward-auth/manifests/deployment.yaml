@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik-forward-auth
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: traefik-forward-auth
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: traefik-forward-auth
+    spec:
+      containers:
+        - name: traefik-forward-auth
+          image: ghcr.io/italypaleale/traefik-forward-auth:3
+          ports:
+          - containerPort: 4181
+            protocol: TCP
+            name: http
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "10m"
+            limits:
+              memory: "100Mi"
+              cpu: "50m"
+          env:
+          # - name: DOMAIN
+          #   value: "duck.moe"
+          - name: TFA_COOKIEDOMAIN
+            value: "duck.moe"
+          - name: TFA_HOSTNAME
+            value: "auth.net.duck.moe"
+          - name: TFA_AUTHPROVIDER
+            value: "openidconnect"
+          - name: TFA_LOG_LEVEL
+            value: "debug"
+          - name: TFA_AUTHOPENIDCONNECT_TOKENISSUER
+            valueFrom:
+              secretKeyRef:
+                name: traefik-forward-auth
+                key: ISSUER_URL
+          - name: TFA_AUTHOPENIDCONNECT_CLIENTID
+            valueFrom:
+              secretKeyRef:
+                name: traefik-forward-auth
+                key: CLIENT_ID
+          - name: TFA_AUTHOPENIDCONNECT_CLIENTSECRET
+            valueFrom:
+              secretKeyRef:
+                name: traefik-forward-auth
+                key: CLIENT_SECRET
+          - name: TFA_TOKENSIGNINGKEY
+            valueFrom:
+              secretKeyRef:
+                name: traefik-forward-auth
+                key: SECRET
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5

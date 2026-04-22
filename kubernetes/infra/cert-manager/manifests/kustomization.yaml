@@ -1,0 +1,3 @@
+resources:
+  - le-http-clusterissuer.yaml
+  - localca-clusterissuer.yaml

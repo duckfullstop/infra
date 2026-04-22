@@ -1,0 +1,66 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: authentik
+  namespace: identity
+spec:
+  project: identity
+  sources:
+    - repoURL: 'https://charts.goauthentik.io'
+      chart: authentik
+      targetRevision: "2024.12.1"
+      helm:
+        valuesObject:
+          authentik:
+            error_reporting:
+              enabled: true
+            postgresql:
+              host: "postgresql.database.svc.cluster.local"
+              user: file:///authentik-secrets/postgresDbUser
+              password: file:///authentik-secrets/postgresDbPassword
+              name: file:///authentik-secrets/postgresDbName
+            # redis:
+            #   host: "redis-master.database.svc.cluster.local"
+          global:
+            env:
+              - name: AUTHENTIK_SECRET_KEY
+                value: "file:///authentik-secrets/postgresDbName"
+            image:
+              tag: "2024.12"
+            volumes:
+              - name: authentik-config
+                secret:
+                  secretName: authentik-config
+              - name: media
+                persistentVolumeClaim:
+                  claimName: authentik-media
+            volumeMounts:
+              - name: authentik-config
+                mountPath: /authentik-secrets
+                readOnly: true
+              - name: media
+                mountPath: /media
+          redis:
+            enabled: true
+            master:
+              persistence:
+                size: 1Gi
+          server:
+            ingress:
+              enabled: true
+              annotations:
+                cert-manager.io/cluster-issuer: "letsencrypt-prod"
+              hosts:
+                - auth.duck.moe
+                - auth.theleachfamily.me.uk
+              tls:
+                - hosts:
+                    - auth.duck.moe
+                    - auth.theleachfamily.me.uk
+                  secretName: "authentik-cert"
+    - repoURL: 'https://github.com/duckfullstop/infra'
+      path: k8s/identity/authentik/manifests
+      targetRevision: main
+  destination:
+    namespace: identity
+    name: ducknet

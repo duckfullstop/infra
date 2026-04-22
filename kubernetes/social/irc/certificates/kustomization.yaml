@@ -1,0 +1,4 @@
+resources:
+  - cert-client-services.yaml
+  - cert-client.yaml
+  - cert-issuer.yaml

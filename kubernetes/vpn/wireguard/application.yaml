@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wireguard
+  namespace: vpn
+spec:
+  project: vpn
+  source:
+    repoURL: 'https://github.com/duckfullstop/infra/'
+    path: k8s/applications/vpn/wireguard/manifests
+    targetRevision: main
+  destination:
+    namespace: vpn
+    name: ducknet

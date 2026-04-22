@@ -1,0 +1,5 @@
+resources:
+  - project.yaml
+  - argocd
+  - traefik
+  - traefik-forward-auth

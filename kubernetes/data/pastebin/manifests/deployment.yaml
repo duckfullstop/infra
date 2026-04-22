@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yabin
+  labels:
+    app: yabin
+spec:
+  selector:
+    matchLabels:
+      app: yabin
+  template:
+    metadata:
+      labels:
+        app: yabin
+    spec:
+      containers:
+      - name: yabin
+        image: ghcr.io/duckfullstop/yabinpp:latest
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "50m"
+          limits:
+            memory: "200Mi"
+            cpu: "500m"
+        env:
+        - name: HOST
+          # grr
+          value: "::"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: yabin
+              key: databaseConnectionUri
+        - name: PUBLIC_NAME
+          value: "paste.duck."
+        - name: PUBLIC_REGISTRATION_ENABLED
+          value: "false"
+        - name: PUBLIC_CUSTOM_PATHS_ENABLED
+          value: "false"
+        - name: PUBLIC_URL
+          value: "https://paste.duck.moe"
+        - name: ORIGIN
+          value: "https://paste.duck.moe"
+        ports:
+        - containerPort: 3000
+          name: http

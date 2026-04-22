@@ -1,0 +1,14 @@
+# This certificate instantiation is necessary because we don't have a standard Ingress for cert-manager to watch out for.
+# Instead, manually request the certificate here, and then bind it to our IngressRoute.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd-cert
+  namespace: argo-cd
+spec:
+  dnsNames:
+    - cd.argo.k8s.net.duck.moe
+  secretName: argocd-cert
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

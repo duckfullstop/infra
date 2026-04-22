@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgresql
+  namespace: database
+spec:
+  project: infra
+  sources:
+    - repoURL: 'registry-1.docker.io/bitnamicharts' # oci
+      chart: postgresql
+      targetRevision: "16.3.*"
+      helm:
+        valuesObject:
+          image:
+            tag: 17
+          auth:
+            database: "postgresql"
+          primary:
+            persistence:
+              enabled: true
+              storageClass: "hcloud-volumes"
+              size: "20G"
+          metrics:
+            enabled: false
+            serviceMonitor:
+              enabled: false
+          postgresqlDatabase: "default"
+          fullnameOverride: "postgresql"
+  destination:
+    namespace: database
+    name: ducknet

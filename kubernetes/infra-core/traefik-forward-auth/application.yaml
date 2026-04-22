@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik-forward-auth
+  namespace: kube-system
+spec:
+  project: infra-core
+  source:
+    - repoURL: 'https://github.com/duckfullstop/infra/'
+      path: kubernetes/infra-core/traefik-forward-auth/manifests
+      targetRevision: main
+  destination:
+    namespace: kube-system
+    name: ducknet

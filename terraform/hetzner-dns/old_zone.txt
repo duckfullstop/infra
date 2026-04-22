@@ -1,0 +1,114 @@
+// duck.me.uk
+@ 10800 IN SOA ns1.gandi.net. hostmaster.gandi.net. 1692737238 10800 3600 604800 10800
+* 43200 IN CNAME ingress.konoha.srv.duck.moe.
+*.home 43200 IN CNAME home.theleachfamily.me.uk.
+@ 43200 IN A 157.90.126.49
+@ 43200 IN AAAA 2a01:4f8:1c1c:ebcc::1
+@ 3600 IN MX 0 duck-me-uk.mail.protection.outlook.com.
+@ 3600 IN TXT "MS=ms73929647"
+@ 3600 IN TXT "keybase-site-verification=3Se7tJU80o5ApePy1nNSoNA1p-_oc_meJU8ucuZRXo4"
+@ 3600 IN TXT "v=spf1 include:spf.protection.outlook.com -all"
+_sip._tls 3600 IN SRV 100 1 443 sipdir.online.lync.com.
+_sipfederationtls._tcp 3600 IN SRV 100 1 5061 sipfed.online.lync.com.
+autodiscover 3600 IN CNAME autodiscover.outlook.com.
+bun-verify 10800 IN TXT "d0b854442c6a1704bc8e27745f08d4025c3a6599ea1e93efdc095b81b54b8903"
+calendar 21600 IN CNAME ghs.googlehosted.com.
+drive 21600 IN CNAME ghs.googlehosted.com.
+enterpriseenrollment 3600 IN CNAME enterpriseenrollment.manage.microsoft.com.
+enterpriseregistration 3600 IN CNAME enterpriseregistration.windows.net.
+files 43200 IN CNAME ingress.konoha.srv.duck.moe.
+home 43200 IN CNAME home.theleachfamily.me.uk.
+lyncdiscover 3600 IN CNAME webdir.online.lync.com.
+paste 43200 IN CNAME ingress.konoha.srv.duck.moe.
+rtun 86400 IN A 88.97.102.182
+selector1._domainkey 3600 IN CNAME selector1-duck-me-uk._domainkey.ducknet.onmicrosoft.com.
+selector2._domainkey 3600 IN CNAME selector2-duck-me-uk._domainkey.ducknet.onmicrosoft.com.
+sip 3600 IN CNAME sipdir.online.lync.com.
+voice.home 3600 IN A 88.97.102.182
+
+// duck.moe
+@ 10800 IN SOA ns1.gandi.net. hostmaster.gandi.net. 1692742918 10800 3600 604800 10800
+* 43200 IN A 157.90.126.49
+* 43200 IN AAAA 2a01:4f8:1c1c:ebcc::1
+* 3600 IN MX 0 duck-moe.mail.protection.outlook.com.
+*.dev 43200 IN CNAME ingress.konoha.srv.duck.moe.
+*.git 300 IN CNAME ingress.konoha.srv.duck.moe.
+*.home 3600 IN A 88.97.102.182
+*.kagepro.srv 1800 IN CNAME ingress.kagepro.srv.duck.moe.
+*.konoha.srv 43200 IN A 157.90.126.49
+*.konoha.srv 43200 IN AAAA 2a01:4f8:1c1c:ebcc::1
+@ 43200 IN A 157.90.126.49
+@ 43200 IN AAAA 2a01:4f8:1c1c:ebcc::1
+@ 3600 IN MX 0 duck-moe.mail.protection.outlook.com.
+@ 3600 IN TXT "MS=ms86934603"
+@ 3600 IN TXT "MS=ms92786489"
+@ 3600 IN TXT "google-site-verification=qx4upz3NPQC_qDxnsXssVgur-jJdsQTir8PQHj7H4kw"
+@ 3600 IN TXT "keybase-site-verification=PySDhKRXxvFtyMr7SRZvWoemPAySfBUoPQMit5KUgFo"
+@ 3600 IN TXT "v=spf1 include:spf.protection.outlook.com include:spf.messagingengine.com -all"
+_dmarc 3600 IN TXT "v=DMARC1; p=reject; rua=mailto:me@duck.moe"
+_matrix._tcp 10800 IN SRV 10 5 443 matrix.duck.moe.
+_sip._tls 3600 IN SRV 100 1 443 sipdir.online.lync.com.
+_sipfederationtls._tcp 3600 IN SRV 100 1 5061 sipfed.online.lync.com.
+autodiscover 3600 IN CNAME autodiscover.outlook.com.
+bun-verify 10800 IN TXT "9932e587d915434413a2d07ab0b87b66ea2b0d9253160bffd5e0b92619c59bb4"
+email.git 86400 IN CNAME eu.mailgun.org
+enterpriseenrollment 3600 IN CNAME enterpriseenrollment.manage.microsoft.com.
+enterpriseregistration 3600 IN CNAME enterpriseregistration.windows.net.
+files 300 IN CNAME ingress.konoha.srv.duck.moe.
+hypervisor.osaka 300 IN CNAME osaka.srv.duck.moe.
+hypervisor.osaka.srv 300 IN CNAME osaka.srv.duck.moe.
+ingress.kagepro.srv 1800 IN CNAME kido.srv.duck.moe.
+kagepro.srv 1800 IN CNAME orchestrator.kagepro.srv.duck.moe.
+kido.master.nbg1.srv 300 IN A 157.90.126.49
+kido.master.nbg1.srv 300 IN AAAA 2a01:4f8:1c1c:ebcc::1
+konoha.srv 43200 IN A 157.90.126.49
+konoha.srv 43200 IN AAAA 2a01:4f8:1c1c:ebcc::1
+lyncdiscover 3600 IN CNAME webdir.online.lync.com.
+master.mekakushidan 1800 IN CNAME kido.master.nbg1.srv
+mc.allie 1800 IN CNAME nagoya.srv.net.theleachfamily.me.uk.
+mekakushidan 1800 IN CNAME kido.master.nbg1.srv
+nagoya.srv 1800 IN CNAME nagoya.srv.net.theleachfamily.me.uk.
+orchestrator.kagepro.srv 1800 IN CNAME kido.srv.duck.moe.
+orchestrator.shikoku.srv 1800 IN CNAME tokushima.srv.duck.moe.
+osaka 43200 IN CNAME osaka.srv.duck.moe.
+osaka.srv 43200 IN A 85.10.199.45
+osaka.srv 43200 IN AAAA 2a01:4f8:a0:52cd::2
+paste 300 IN CNAME ingress.konoha.srv.duck.moe.
+plex 1800 IN CNAME ingress.net.theleachfamily.me.uk.
+selector1._domainkey 3600 IN CNAME selector1-duck-moe._domainkey.ducknet.onmicrosoft.com.
+selector2._domainkey 3600 IN CNAME selector2-duck-moe._domainkey.ducknet.onmicrosoft.com.
+sip 3600 IN CNAME sipdir.online.lync.com.
+tasks 300 IN CNAME ingress.konoha.srv.duck.moe.
+znc 300 IN CNAME ingress.konoha.srv.duck.moe.
+
+// luaduck.co.uk
+@ 10800 IN SOA ns1.gandi.net. hostmaster.gandi.net. 1630958249 10800 3600 604800 10800
+* 43200 IN CNAME ingress.konoha.srv.duck.moe
+@ 43200 IN A 157.90.126.49
+@ 43200 IN AAAA 2a01:4f8:1c1c:ebcc::1
+@ 3600 IN MX 0 luaduck-co-uk.mail.protection.outlook.com.
+@ 3600 IN TXT "MS=ms39960077"
+@ 3600 IN TXT "keybase-site-verification=XWEW7gfExoKkqoN4nR9QKlF6TdEiCdMB4A6Dd835Qic"
+@ 3600 IN TXT "v=spf1 include:spf.protection.outlook.com -all"
+_sip._tls 3600 IN SRV 100 1 443 sipdir.online.lync.com.
+_sipfederationtls._tcp 3600 IN SRV 100 1 5061 sipfed.online.lync.com.
+autodiscover 3600 IN CNAME autodiscover.outlook.com.
+calendar 21600 IN CNAME ghs.googlehosted.com.
+drive 21600 IN CNAME ghs.googlehosted.com.
+enterpriseenrollment 3600 IN CNAME enterpriseenrollment.manage.microsoft.com.
+enterpriseregistration 3600 IN CNAME enterpriseregistration.windows.net.
+hexx 3600 IN A 46.105.138.10
+hypervisor.osaka 43200 IN A 85.10.199.45
+hypervisor.osaka 43200 IN AAAA 2a01:4f8:a0:52cd::2
+kanazawa 43200 IN A 188.40.223.192
+kanazawa 43200 IN AAAA 2a01:4f8:a0:52cd:573::d2cc
+kanazawa.srv 43200 IN A 188.40.223.192
+kanazawa.srv 43200 IN AAAA 2a01:4f8:a0:52cd:573::d2cc
+lyncdiscover 3600 IN CNAME webdir.online.lync.com.
+osaka 43200 IN A 85.10.199.45
+osaka 43200 IN AAAA 2a01:4f8:a0:52cd::2
+selector1._domainkey 3600 IN CNAME selector1-luaduck-co-uk._domainkey.ducknet.onmicrosoft.com.
+selector2._domainkey 3600 IN CNAME selector2-luaduck-co-uk._domainkey.ducknet.onmicrosoft.com.
+sip 3600 IN CNAME sipdir.online.lync.com.
+tokyo.srv 21600 IN A 88.97.102.182
+tokyo.srv 21600 IN AAAA 2a02:8010:61d0:beef::93c

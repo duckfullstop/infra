@@ -1,0 +1,95 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  project: infra-core
+  sources:
+    - repoURL: https://helm.traefik.io/traefik
+      targetRevision: v33.2.x
+      helm:
+        valuesObject:
+          deployment:
+            enabled: true
+            kind: DaemonSet
+          gateway:
+            # TODO enable this
+            enabled: false
+            namespacePolicy: All
+          ingressRoute:
+            dashboard:
+              enabled: true
+              annotations:
+                cert-manager.io/cluster-issuer: letsencrypt-http-prod
+                traefik.ingress.kubernetes.io/router.middlewares: kube-system-traefik-forward-auth@kubernetescrd
+          metrics:
+            # prometheus:
+            #   entryPoint: metrics
+            #   serviceMonitor:
+            #     enabled: true
+            #     jobLabel: traefik
+            #   service:
+            #     enabled: true
+          providers:
+            kubernetesCRD:
+              allowCrossNamespace: true
+              allowExternalNameServices: true
+              enabled: true
+            kubernetesIngress:
+              allowExternalNameServices: true
+              enabled: true
+              publishedService:
+                enabled: true
+            kubernetesGateway:
+              enabled: true
+          ports:
+            web:
+              port: 80
+              expose:
+                default: true
+              exposedPort: 80
+              nodePort: 80
+              redirectTo: 
+                port: websecure
+            websecure:
+              expose:
+                default: true
+              exposedPort: 443
+              port: 443
+              nodePort: 443
+              tls:
+                enabled: true
+            traefik:
+              expose:
+                default: true
+            metrics:
+              port: 9100
+              expose:
+                default: false
+              exposedPort: 9100
+              protocol: TCP
+          service:
+            enabled: true
+            ipFamilies:
+            - IPv6
+            - IPv4
+            ipFamilyPolicy: PreferDualStack
+            spec:
+              externalTrafficPolicy: Local
+            type: NodePort
+          securityContext:
+            capabilities:
+              drop: [ALL]
+              add: [NET_BIND_SERVICE]
+            readOnlyRootFilesystem: true
+            runAsGroup: 0
+            runAsNonRoot: false
+            runAsUser: 0
+      chart: traefik
+    # - repoURL: 'https://github.com/duckfullstop/infra-ln/'
+    #   path: k8s/applications/infrastructure/traefik/manifests
+    #   targetRevision: main
+  destination:
+    namespace: kube-system
+    name: ducknet

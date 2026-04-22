@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: interduck
+  namespace: web
+spec:
+  project: web
+  source:
+    repoURL: 'https://github.com/duckfullstop/infra-ln/'
+    path: k8s/applications/web/interduck/manifests
+    targetRevision: main
+  destination:
+    namespace: web
+    name: ducknet

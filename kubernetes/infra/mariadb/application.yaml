@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mariadb
+  namespace: database
+spec:
+  project: infra
+  sources:
+    - repoURL: 'registry-1.docker.io/bitnamicharts'
+      chart: mariadb
+      targetRevision: "16.3.*"
+      helm:
+        valuesObject:
+          architecture: "standalone"
+          # auth:
+          #  usePasswordFiles: true
+          fullnameOverride: "mariadb"
+          primary:
+            persistence:
+              storageClass: "hcloud-volumes"
+              size: "5Gi"
+          secondary:
+            replicaCount: 0
+            # secondary.persistence.storageClass: "hcloud-volumes"
+            # secondary.persistence.size: "10Gi"
+          metrics:
+            enabled: false
+            serviceMonitor:
+              enabled: false
+  destination:
+    namespace: database
+    name: ducknet

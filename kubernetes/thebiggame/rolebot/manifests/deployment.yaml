@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bigbot
+  labels:
+    app: bigbot
+spec:
+  selector:
+    matchLabels:
+      app: bigbot
+  template:
+    metadata:
+      labels:
+        app: bigbot
+    spec:
+      containers:
+      - image: ghcr.io/thebiggame/bigbot:latest
+        name: bot
+        command:
+          - /app/bigbot
+          - run
+        env:
+          - name: BIGBOT_BRIDGE_ENABLED
+            value: "true"
+          - name: BIGBOT_BRIDGE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: tbg
+                key: bridgeKey
+          - name: BIGBOT_BRIDGE_LISTEN
+            value: "[::]:8080"
+          - name: BIGBOT_DISCORD_ANNOUNCEMENTS_CHANNEL
+            # Staging
+            # value: "1353751825509257328"
+            # Production
+            value: ""
+          - name: BIGBOT_DISCORD_GUILD
+            # value: "502479245138853888"
+            # Production
+            value: "288422002816188416"
+          - name: BIGBOT_DISCORD_PERMISSIONS_ROLE_CREW
+            # Staging
+            # value: "1353857557973827584"
+            # Production
+            value: "292032597301657600"
+          - name: BIGBOT_DISCORD_SHOUTBOX_CHANNEL
+            # Staging
+            # value: "1361448639062610201"
+            # Production
+            value: "548836825410568202"
+          - name: BIGBOT_DISCORD_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: tbg
+                key: discordToken
+          - name: BIGBOT_DISCORD_OAUTH_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: tbg
+                key: discordOAuthSecret
+          - name: BIGBOT_LOG_LEVEL
+            value: "DEBUG"
+          - name: BIGBOT_TEAMS_MAX_USER_ROLES
+            value: "5"
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+        #resources:
+        #  requests:
+        #    memory: "40Mi"
+        #    cpu: "50m"
+        #  limits:
+        #    memory: "75Mi"
+        #    cpu: "100m"

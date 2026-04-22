@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: musicparty
+  namespace: thebiggame
+spec:
+  project: thebiggame
+  source:
+    repoURL: 'https://github.com/duckfullstop/infra/'
+    path: k8s/applications/thebiggame/musicparty/manifests
+    targetRevision: main
+  destination:
+    namespace: thebiggame
+    name: ducknet
