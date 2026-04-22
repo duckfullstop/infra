@@ -25,7 +25,7 @@ spec:
             # allowUserSignups: "withToken"
             host: "'::'"
           image:
-            tag: "v2.0-distroless"
+            tag: "v2.6-distroless"
           ingress:
             enabled: true
             annotations:
