@@ -8,7 +8,7 @@ spec:
   sources:
     - repoURL: https://charts.nerkho.ch
       chart: bluesky-pds
-      targetRevision: 0.2.1
+      targetRevision: 0.4.*
       helm:
         valuesObject:
           pds:
